@@ -21,7 +21,7 @@ npm run build
 npm run preview
 ```
 
-开发服务与预览均使用 3001 端口，启动预览前应停止开发服务。构建产物位于 `dist/`。
+开发服务与预览均使用 3001 端口，启动预览前应停止开发服务。构建产物位于 `dist/`，已随 Demo 一起提交到仓库。更新源码后，请执行 `npm run build` 并同步新的构建产物。部署 `dist/` 时，需要将前端路由回退到 `index.html`；本地预览请使用 `npm ci` 后执行 `npm run preview`。
 
 ## 文件说明
 
