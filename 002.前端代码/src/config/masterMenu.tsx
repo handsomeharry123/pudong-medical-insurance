@@ -70,7 +70,7 @@ export interface MasterModule {
 }
 
 export const masterMenu: MasterModule[] = [
-  { key: 'assistant', name: '医小管', path: '/app/home/overview', icon: <RobotOutlined />, defaultVisible: true, defaultRoleVisible: 'both' },
+  { key: 'assistant', name: '医小保', path: '/app/home/overview', icon: <RobotOutlined />, defaultVisible: true, defaultRoleVisible: 'both' },
 ];
 
 /** 根据角色 + 显隐集合计算最终菜单（含子项） */

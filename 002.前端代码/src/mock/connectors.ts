@@ -42,7 +42,7 @@ export const initialConnectors: ConnectorState[] = [
   {
     key: 'wechat',
     name: '微信',
-    description: '接入个人微信，用于接收医小管推送的报告、告警等消息',
+    description: '接入个人微信，用于接收医小保推送的报告、告警等消息',
     iconName: 'WechatOutlined',
     brandColor: '#07C160',
     capabilities: ['消息推送', '附件发送'],

@@ -672,7 +672,7 @@ html, body {
   animation: agent-drop-flash 0.9s ease-in-out infinite;
 }
 
-/* V2:医小管浮窗徽章绿点呼吸 */
+/* V2:医小保浮窗徽章绿点呼吸 */
 @keyframes agentFloatPulse {
   0%, 100% { transform: scale(1); opacity: 1; }
   50%      { transform: scale(1.35); opacity: 0.55; }

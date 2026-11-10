@@ -26,7 +26,7 @@ export default function BasicLayout() {
       <div className="platform-header-right">
         <nav className="platform-switch" aria-label="平台主导航">
           <NavLink to="/app/home/dashboard" className={dashboard ? 'selected' : ''}><span>数据大屏</span></NavLink>
-          <NavLink to="/app/home/overview" className={!dashboard ? 'selected' : ''}><span>医小管</span></NavLink>
+          <NavLink to="/app/home/overview" className={!dashboard ? 'selected' : ''}><span>医小保</span></NavLink>
         </nav>
         <span className="platform-header-divider" />
         <Dropdown trigger={['click']} menu={{ items: [

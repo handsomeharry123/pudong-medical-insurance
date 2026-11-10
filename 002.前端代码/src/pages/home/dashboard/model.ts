@@ -44,8 +44,8 @@ export function summary({mode,highOnly,riskFilter,structure,trend,period,project
  const leadingBehavior=[...behaviorTotals].sort((a,b)=>b.amount-a.amount)[0];
  const filterLabel=riskFilter?`筛选${orgs.filter(i=>i.risk===riskFilter).length}家${riskFilter}`:`全部${orgs.length}家`;
  return [
- `03${mode}·${filterLabel}；01${structure||'占比'}：高/中/低${riskStructure.map(r=>r.count).join('/')}家。${trend}趋势高风险较上期${last.高风险-before.高风险>=0?'+':''}${last.高风险-before.高风险}家。`,
- `${p.label}已办${p.done}/${p.total}次（${(p.ratio*100).toFixed(1)}%），待办${p.pending}次。风险TOP1：${top10[0].name}，${top10[0].latest.toFixed(2)}分。`,
+ `03${mode}·${filterLabel}；01${structure||'占比'}高/中/低${riskStructure.map(r=>r.count).join('/')}家。${trend}趋势高风险较上期${last.高风险-before.高风险>=0?'+':''}${last.高风险-before.高风险}家。`,
+ `${p.label}已办${p.done}/${p.total}次（${(p.ratio*100).toFixed(1)}%），待办${p.pending}次。风险TOP1最新检查${top10[0].latest.toFixed(2)}分。`,
  `${leadingBehavior.name}费用占比${leadingBehavior.percent}%；项目${projectMode}TOP1：${highest.name}，${((projectMode==='总额'?highest.amount:highest.average)/10000).toFixed(2)}万元。`
  ];
 }
