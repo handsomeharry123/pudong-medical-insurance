@@ -1,15 +1,14 @@
 import { useEffect } from 'react';
 import { Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Avatar, Dropdown } from 'antd';
-import { LogoutOutlined, UserOutlined, CheckOutlined, BgColorsOutlined } from '@ant-design/icons';
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../hooks/useTheme';
-import { THEME_LABELS, type ThemeKey } from '../theme/themeConfig';
 import './platform.css';
 
 export default function BasicLayout() {
   const { currentUser, logout } = useAuth();
-  const { themeKey, setThemeKey } = useTheme();
+  const { themeKey } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const dashboard = location.pathname === '/app/home/dashboard';
@@ -30,12 +29,9 @@ export default function BasicLayout() {
         </nav>
         <span className="platform-header-divider" />
         <Dropdown trigger={['click']} menu={{ items: [
-          { key: 'theme', label: '主题切换', icon: <BgColorsOutlined />, children: (['simple','tech'] as ThemeKey[]).map(key => ({ key, label: THEME_LABELS[key], icon: key === themeKey ? <CheckOutlined /> : undefined })) },
-          { type: 'divider' },
           { key: 'logout', label: '退出登录', icon: <LogoutOutlined />, danger: true },
         ], onClick: ({ key }) => {
           if (key === 'logout') { logout(); navigate('/login'); }
-          else if (key === 'simple' || key === 'tech') setThemeKey(key);
         } }}>
           <button className="platform-account" aria-label="用户菜单"><Avatar size={30} icon={<UserOutlined />} style={{ background: '#eaf2ff', color: '#2469e8' }} /><span>{currentUser.name}</span></button>
         </Dropdown>
