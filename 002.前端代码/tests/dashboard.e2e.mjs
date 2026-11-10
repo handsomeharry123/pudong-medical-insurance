@@ -1,0 +1,34 @@
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+import {mkdir} from 'node:fs/promises';
+const output='/tmp/pudong-history-qa';await mkdir(output,{recursive:true});
+const browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:1600,height:1100}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+const base=process.env.BASE_URL||'http://localhost:3001';
+try{
+ await page.goto(base+'/login');await page.getByPlaceholder('工号 / 手机号 / 姓名').fill('admin');await page.getByPlaceholder('请输入密码',{exact:true}).fill('admin');await page.getByRole('button',{name:'登 录',exact:true}).click();await page.waitForURL('**/app/home/dashboard');await page.getByTestId('history-dashboard').waitFor();
+ const model=await page.evaluate(async()=>{const d=await import('/src/pages/home/dashboard/model.ts'),r=await import('/src/pages/home/regulator/data.ts');return{totals:d.totals,points:d.points.length,path:d.mapPaths.length,stageSum:d.stages.reduce((s,x)=>s+x.count,0),stageNames:d.stages.map(s=>s.name),stageClosed:d.stages.find(s=>s.name==='形成结果').count,fee:d.behaviorTotals.reduce((s,b)=>s+b.amount,0),projects:d.projects.reduce((s,p)=>s+p.amount,0),rank:d.top10.map(o=>({risk:o.risk,value:o.latest})),month:d.progress('月度'),year:d.progress('年度'),cases:r.checks.filter(c=>c.stage!=='形成结果').length,avgRank:d.projectRanking('次均').map(p=>p.average)};});
+ assert.equal(model.points,124);assert.ok(model.path>0);assert.equal(model.stageSum,model.totals.checks);assert.equal(model.totals.pending,model.cases);assert.equal(model.stageClosed,model.totals.checks-model.cases);assert.equal(model.fee,model.totals.fee);assert.equal(model.projects,model.totals.fee);assert.deepEqual(model.stageNames,['网审分工','检查实施','调查取证','形成结果']);assert.ok(model.rank.every(r=>r.risk==='高风险'));for(let i=1;i<10;i++)assert.ok(model.rank[i-1].value>=model.rank[i].value);assert.equal(model.month.done+model.month.pending,model.month.total);
+ assert.equal(await page.locator('.history-kpis>*').count(),5);assert.equal(await page.locator('.history-panel h2').count(),8);assert.equal(await page.locator('.history-map-point').count(),124);
+ await page.getByTestId('kpi-high').click();assert.equal(await page.locator('.history-map-point').count(),12);assert.match(await page.locator('.history-summary-panel').innerText(),/筛选12家高风险/);
+ await page.getByTestId('kpi-high').click();assert.equal(await page.locator('.history-map-point').count(),124);
+ await page.getByTestId('kpi-institutions').click();await page.locator('.history-org-scroll').waitFor();assert.equal(await page.locator('.history-org-scroll>div').first().locator('.history-org-row').count(),124);
+ await page.getByLabel('机构列表排序',{exact:true}).selectOption('最新检查风险值');await page.getByLabel('核心视图风险筛选',{exact:true}).selectOption('中风险');assert.equal(await page.locator('.history-org-scroll>div').first().locator('.history-org-row').count(),28);
+ await page.getByRole('button',{name:'清除联动'}).click();await page.locator('.history-map-point').first().click();const summary=page.getByTestId('org-summary');await summary.waitFor();const orgName=await summary.locator('h3').innerText();const orgCode=await summary.locator(':scope>p').innerText();assert.match(await summary.innerText(),/历次风险值均分/);
+ await page.getByRole('button',{name:'查看机构画像',exact:true}).click();await page.waitForURL('**/app/home/overview');await page.locator('[data-view="profile"]').waitFor();assert.match(await page.locator('[data-view="profile"]').innerText(),new RegExp(orgCode));
+ await page.locator('.platform-switch a').first().click();await page.locator('.history-map-point').first().click();await page.getByRole('button',{name:'查看历次检查',exact:true}).click();await page.waitForURL('**/app/home/overview');await page.locator('[data-view="checks"]').waitFor();assert.match(await page.locator('.reg-message-text').last().innerText(),new RegExp(orgName));assert.match(await page.locator('.reg-context-bar').innerText(),/单次监管检查分析/);
+ await page.locator('.platform-switch a').first().click();
+ const panel=n=>page.locator('.history-panel').filter({has:page.locator('h2>span').filter({hasText:new RegExp('^'+n+'$')})});
+ await panel('01').getByText('数量',{exact:true}).click();await panel('01').getByText('结算等级',{exact:true}).click();assert.match(await page.locator('.history-summary-panel').innerText(),/结算等级/);
+ await panel('02').getByText('年度',{exact:true}).click();assert.match(await page.locator('.history-summary-panel').innerText(),/年度趋势/);
+ await panel('04').getByText('月度',{exact:true}).click();assert.match(await page.locator('.history-progress-values').innerText(),new RegExp('已办 '+model.month.done));
+ await panel('07').getByText('次均',{exact:true}).click();assert.match(await page.locator('.history-summary-panel').innerText(),/项目次均TOP1/);
+ await page.getByRole('button',{name:'重新生成'}).click();assert.match(await page.locator('.history-summary-status').innerText(),/已重新生成/);
+ await page.getByRole('button',{name:'展开大屏'}).click();assert.equal(await page.locator('.history-expanded').count(),1);await page.keyboard.press('Escape');assert.equal(await page.locator('.history-expanded').count(),0);
+ await page.clock.install();await page.getByRole('switch',{name:'自动轮播'}).click();await page.mouse.move(1,1);await page.clock.fastForward(8500);await page.locator('.history-org-scroll').waitFor();
+ await page.getByTestId('core-view').hover();await page.clock.fastForward(17000);assert.equal(await page.locator('.history-org-scroll').count(),1);assert.match(await page.locator('.history-core-footer').innerText(),/暂停/);
+ await page.mouse.move(1,1);await page.clock.fastForward(8500);await page.getByTestId('pudong-map').waitFor();
+ await page.getByRole('switch',{name:'自动轮播'}).click();
+ await page.waitForTimeout(350);await page.screenshot({path:output+'/dashboard.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});await page.screenshot({path:output+'/mobile.png',fullPage:true});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+ assert.deepEqual(errors,[]);console.log(JSON.stringify({panels:8,metrics:5,mapPoints:model.points,totals:model.totals,checks:'risk-toggle, filters, sort, institution-context, time-switches, summary, autoplay pause/resume, fullscreen, mobile',errors}));
+}finally{await browser.close();}
