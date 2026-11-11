@@ -1,31 +1,37 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Avatar, Dropdown } from 'antd';
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { AppstoreOutlined, BarChartOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../hooks/useTheme';
 import './platform.css';
+import PlatformNavigation, { NavigationContext } from './PlatformNavigation';
 
 export default function BasicLayout() {
+  const [collapsed, setCollapsed] = useState(false);
   const { currentUser, logout } = useAuth();
   const { themeKey } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+  const contentRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    contentRef.current?.scrollTo(0, 0);
+  }, [location.pathname]);
   const dashboard = location.pathname === '/app/home/dashboard';
   useEffect(() => {
     document.body.setAttribute('data-app-theme', themeKey);
     return () => document.body.removeAttribute('data-app-theme');
   }, [themeKey]);
   if (!currentUser) return <Navigate to="/login" replace />;
-  return <div className={`platform-shell ${dashboard ? 'platform-shell-dashboard' : ''}`}>
+  return <NavigationContext.Provider value={{ collapsed, toggle: () => setCollapsed(value => !value) }}><div className={`platform-shell ${dashboard ? 'platform-shell-dashboard' : ''}`}>
     <header className="platform-header">
-      <NavLink to="/app/home/dashboard" className="platform-brand">
+      <NavLink to="/app/home/overview" className="platform-brand">
         <img src="/logo.svg" alt="" /><span>浦东新区医保数据治理与一体化应用平台</span>
       </NavLink>
       <div className="platform-header-right">
         <nav className="platform-switch" aria-label="平台主导航">
-          <NavLink to="/app/home/dashboard" className={dashboard ? 'selected' : ''}><span>数据大屏</span></NavLink>
-          <NavLink to="/app/home/overview" className={!dashboard ? 'selected' : ''}><span>医小保</span></NavLink>
+          <NavLink to="/app/home/overview" className={!dashboard ? 'selected' : ''} aria-current={!dashboard ? 'page' : undefined} onClick={() => setCollapsed(false)}><AppstoreOutlined /><span>业务工作台</span></NavLink>
+          <NavLink to="/app/home/dashboard" className={dashboard ? 'selected' : ''} aria-current={dashboard ? 'page' : undefined}><BarChartOutlined /><span>数据大屏</span></NavLink>
         </nav>
         <span className="platform-header-divider" />
         <Dropdown trigger={['click']} menu={{ items: [
@@ -37,6 +43,6 @@ export default function BasicLayout() {
         </Dropdown>
       </div>
     </header>
-    <main className="platform-content"><Outlet /></main>
-  </div>;
+    <div className="platform-body">{!dashboard && <PlatformNavigation />}<main ref={contentRef} className="platform-content"><Outlet /></main></div>
+  </div></NavigationContext.Provider>;
 }

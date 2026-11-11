@@ -1,0 +1,108 @@
+.check-profile .profiles-body{gap:18px}.check-page-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}.check-type-date{display:flex;align-items:center;gap:10px;font-size:12px;color:#90a1bb;margin-bottom:10px}.check-type-date>span{background:#e7efff;border-radius:20px;color:#557fbd;padding:5px 10px}.check-page-heading h1{font-size:27px;letter-spacing:.3px;color:#233551;margin:0 0 8px;font-weight:650}.check-page-heading p{font-size:13px;color:#7e91ad;margin:0}.check-status{color:#5087cb;background:#eaf1ff;border-radius:7px;padding:8px 12px;font-size:12px}.check-status.closed{background:#eaf7f0;color:#32906d}.check-global-filters{padding:18px 20px}.check-filter-grid{display:grid;grid-template-columns:.8fr .9fr 1fr 1.45fr 1fr 1.7fr auto;gap:12px;align-items:end}.check-filter-grid>label{min-width:0;display:flex;flex-direction:column;gap:8px;color:#7f91ab;font-size:11px}.check-filter-grid .ant-select{width:100%;font-size:12px}.check-filter-grid .ant-select-selector{min-height:38px!important;border-radius:7px!important;border-color:#e5ebf6!important;background:#f6f8fd!important;align-items:center;box-shadow:none!important}.check-filter-grid .ant-select-selection-placeholder{color:#9aaac1}.check-filter-grid .ant-input-affix-wrapper{height:38px;border-radius:7px;border-color:#e5ebf6;background:#f6f8fd}.check-filter-grid .ant-input{background:transparent;font-size:12px}.check-filter-grid .ant-input::placeholder{color:#a1aec2}.check-filter-grid .ant-select-focused .ant-select-selector,.check-filter-grid .ant-input-affix-wrapper-focused{border-color:#6295ff!important;box-shadow:0 0 0 2px #0156ff0b!important}.check-filter-grid>.ant-btn{height:38px;border-color:#e5ebf6;border-radius:7px;color:#7185a0;font-size:12px;box-shadow:none}.check-filter-summary{display:flex;align-items:center;justify-content:flex-end;gap:12px;border-top:1px solid #edf1f8;padding-top:12px;margin-top:14px;min-height:26px}.check-filter-summary>strong{font-size:12px;font-weight:500;color:#7c91ae;white-space:nowrap;font-variant-numeric:tabular-nums}.check-global-filters .institution-note{margin-top:7px}.check-core-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}.check-core-stats>article{background:#f8faff;border:1px solid #e9eef7;border-radius:10px;padding:18px}.check-core-stats>article>span{font-size:12px;color:#8b9cb5}.check-core-stats strong{display:block;font-size:31px;line-height:1.4;font-weight:600;margin-top:10px;font-variant-numeric:tabular-nums;color:#2e5389}.check-core-stats strong.orange{color:#df8a35}.check-core-stats strong.green{color:#32a279}.check-core-stats p{font-size:10px;color:#a0aec2;margin:5px 0 0}.check-overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.check-overview-panel{padding:18px;border:1px solid #e9eef7;border-radius:9px}.check-overview-panel h3{font-size:13px;font-weight:600;color:#3f5574;margin:0}.check-overview-panel>p{font-size:11px;color:#98a8be;margin:6px 0 14px}.check-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}.check-panel-heading>span{font-size:10px;background:#f2f6fc;color:#91a3bd;padding:4px 8px;border-radius:10px}.check-region-bar{height:10px;background:#f0f4fa;display:flex;overflow:hidden;border-radius:6px;margin:16px 0}.check-region-bar>span:first-child{background:#528bf6}.check-region-bar>span+span{background:#ed9b4f}.check-region-legend{display:grid;grid-template-columns:1fr 1fr;gap:16px}.check-region-legend span{font-size:11px;color:#8a9db8;display:flex;gap:7px;align-items:center}.check-region-legend i{width:6px;height:6px;border-radius:50%}.check-region-legend strong{display:block;font-size:12px;font-weight:500;color:#637c9f;margin:7px 0}.check-region-legend p{font-size:10px;color:#a0aec2;margin:0}.check-contribution{display:flex;flex-direction:column;gap:10px;margin-top:12px}.check-contribution>div{display:grid;grid-template-columns:170px minmax(0,1fr) 45px;gap:10px;align-items:center}.check-contribution>div>span{font-size:11px;color:#7f92ae}.check-contribution>div>div{height:7px;background:#f0f3f8;border-radius:5px;overflow:hidden}.check-contribution i{display:block;height:100%;background:linear-gradient(90deg,#72a1f6,#f2a665);border-radius:5px}.check-contribution strong{font-size:11px;color:#6381a9;font-weight:500;text-align:right}.check-two-column{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:18px}.check-section .institution-section-title{flex-wrap:wrap}.check-section .institution-section-title h2{font-size:15px}.check-section .institution-controls{flex-wrap:wrap;margin-left:auto}.check-behavior-bars{display:flex;flex-direction:column;gap:14px;padding:5px 0 20px;border-bottom:1px solid #edf1f8}.check-behavior-bars>div{display:grid;grid-template-columns:minmax(120px,1fr) minmax(40px,1.15fr) 100px;align-items:center;gap:10px}.check-behavior-bars span{font-size:11px;color:#7185a2}.check-behavior-bars>div>div{height:8px;background:#eff3fa;border-radius:5px;overflow:hidden}.check-behavior-bars i{display:block;height:100%;background:#528bf6;border-radius:5px}.check-behavior-bars strong{font-size:11px;color:#7f93b0;font-weight:400;text-align:right;font-variant-numeric:tabular-nums}.check-top-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.check-top-cards article{background:#fafcff;border:1px solid #e9eef7;border-radius:8px;padding:12px;min-width:0}.check-top-cards h3{display:flex;align-items:flex-start;gap:6px;font-size:10px;color:#5c7394;margin:0 0 8px;font-weight:500;line-height:1.7}.check-top-cards h3>span{background:#e9f0ff;color:#497dca;border-radius:50%;width:17px;height:17px;text-align:center;flex-shrink:0;line-height:17px;font-size:9px}.check-top-cards button{appearance:none;width:100%;border:0;border-top:1px dashed #e2eaf6;background:none;padding:9px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;text-align:left;cursor:pointer;font:inherit;font-size:10px;color:#6f85a6}.check-top-cards button>span{min-width:0;line-height:1.7}.check-top-cards strong{white-space:nowrap;font-weight:400;color:#5688c8;font-size:10px;line-height:1.7}.check-top-cards button:hover span{color:#0156ff}.check-matrix button{width:100%;height:100%;border:0;color:inherit;background:none;cursor:pointer;font:inherit;padding:0;min-height:32px}.check-matrix td{padding:0}.check-matrix td>span{padding:12px 4px}.check-matrix button:hover{box-shadow:inset 0 0 0 1px #ec9a4c}.check-ranking-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}.check-ranking-note{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:10px;color:#7d94b2;background:#f5f8fd;padding:11px;border-radius:7px;margin-bottom:8px}.check-ranking-note span:last-child{color:#a0aec2}.check-pareto-wrap{overflow:auto;padding-top:8px}.check-pareto-wrap svg{width:100%;min-width:530px;display:block}.check-pareto-item{cursor:pointer;outline:none}.check-pareto-item:hover rect{fill:#0156ff}.check-pareto-item:focus rect{stroke:#0156ff;stroke-width:2}.check-insurance-legend{display:flex;flex-wrap:wrap;gap:10px 12px;margin-bottom:30px}.check-insurance-legend>span{display:flex;align-items:center;gap:5px;color:#8a9cb6;font-size:10px}.check-insurance-legend i{width:7px;height:7px;border-radius:2px;flex-shrink:0}.check-insurance-bars{display:flex;flex-direction:column;gap:30px;margin:34px 0 40px}.check-insurance-row{display:grid;grid-template-columns:55px minmax(0,1fr) 95px;gap:10px;align-items:center}.check-insurance-name{padding:0;border:0;background:none;cursor:pointer;font:inherit;font-size:11px;color:#6e84a3;text-align:left}.check-insurance-name:hover{color:#0156ff}.check-stack{display:flex;align-items:stretch;height:24px;overflow:hidden;border-radius:6px;background:#f0f4fa}.check-stack button{border:0;padding:0;cursor:pointer;min-width:1px;transition:opacity .15s}.check-stack button:hover{opacity:.7}.check-insurance-row>strong{font-size:11px;color:#879cb9;font-weight:400;text-align:right;font-variant-numeric:tabular-nums}.check-detail-tools .ant-select{min-width:155px}.check-detail-tools .ant-btn{font-size:11px;color:#6f86a5;border-color:#e5edf8;border-radius:7px;box-shadow:none}.check-detail-table{font-size:11px;min-width:1140px}.check-detail-table th:first-child,.check-detail-table th:nth-child(2){width:auto}.check-detail-table th{font-size:10px;padding:13px 10px}.check-detail-table td{padding:12px 10px}.check-detail-table td:nth-child(7),.check-detail-table td:nth-child(8),.check-detail-table td:nth-child(9){font-variant-numeric:tabular-nums;text-align:right}.check-region-tag,.check-behavior-tag{font-size:10px;background:#eef4ff;color:#658bc1;border-radius:15px;padding:4px 7px}.check-region-tag.foreign{background:#fff3e6;color:#d38a3c}.check-row-detail{border:0;background:transparent;border-radius:5px;padding:5px 8px;color:#0156ff;font:inherit;font-size:11px;cursor:pointer}.check-row-detail:hover{background:#edf3ff}.check-pagination{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:15px;font-size:11px;color:#91a1b9}.check-pagination .ant-btn{font-size:11px;border-radius:6px;border-color:#e5edf8;color:#7891b2;box-shadow:none}.check-pagination .ant-btn:disabled{color:#c7d1e0}.check-advice-stats{grid-template-columns:repeat(4,minmax(0,1fr))}.check-advice-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.check-advice-grid article{min-height:105px}.check-profile button:focus-visible{outline:2px solid #0156ff;outline-offset:2px}
+@media(max-width:1450px){.check-filter-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.check-filter-grid>.ant-btn{justify-self:end;min-width:75px;grid-column:3}.check-core-stats strong{font-size:27px}.check-contribution>div{grid-template-columns:135px minmax(0,1fr) 42px}.check-top-cards button{flex-wrap:wrap}.check-behavior-bars>div{grid-template-columns:minmax(110px,1fr) minmax(40px,.8fr) 90px}.check-insurance-row{grid-template-columns:45px minmax(0,1fr) 90px;gap:8px}}
+@media(max-width:1200px){.check-two-column,.check-ranking-grid{grid-template-columns:1fr}.check-top-cards button{flex-wrap:nowrap}.check-contribution>div{grid-template-columns:110px minmax(0,1fr) 40px}.check-advice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.check-core-stats strong{font-size:25px}.check-overview-grid{grid-template-columns:1fr}.check-pareto-wrap svg{max-height:800px}}
+@media(max-width:760px){.check-page-heading h1{font-size:22px}.check-page-heading p{font-size:11px}.check-type-date{font-size:11px}.check-global-filters{padding:14px}.check-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.check-filter-grid>.ant-btn{grid-column:2}.check-filter-summary{align-items:flex-start;flex-direction:column}.check-filter-summary>strong{font-size:11px;white-space:normal}.check-core-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.check-core-stats>article{padding:13px}.check-core-stats strong{font-size:23px}.check-core-stats>article>span{font-size:11px}.check-core-stats p{font-size:9px}.check-overview-panel{padding:13px}.check-region-legend{gap:9px}.check-region-legend strong{font-size:10px}.check-contribution>div{grid-template-columns:120px minmax(0,1fr) 38px;gap:6px}.check-contribution>div>span,.check-contribution strong{font-size:10px}.check-section .institution-section-title h2{font-size:13px}.check-top-cards{grid-template-columns:1fr}.check-top-cards button{font-size:11px}.check-top-cards h3{font-size:11px}.check-behavior-bars>div{grid-template-columns:110px minmax(20px,1fr) 80px;gap:7px}.check-behavior-bars span,.check-behavior-bars strong{font-size:10px}.check-ranking-note{flex-direction:column;align-items:flex-start;gap:6px}.check-insurance-row{grid-template-columns:48px minmax(0,1fr) 82px}.check-insurance-row>strong{font-size:10px}.check-insurance-name{font-size:10px}.check-detail-tools{justify-content:flex-end;gap:7px}.check-detail-tools .ant-select{min-width:145px}.check-detail-tools .ant-btn{font-size:10px}.check-advice-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.check-advice-grid{grid-template-columns:1fr}.check-advice-grid article{min-height:0}.check-profile .profiles-breadcrumb .ant-breadcrumb{font-size:11px}}
+
+/* Keep the inspection dashboard on a shared vertical rhythm. Ant Select's
+   default 32px root must match its 38px selector, including multiple mode. */
+.check-profile .check-filter-grid{align-items:end}
+.check-profile .check-filter-grid>label{gap:8px;line-height:18px}
+.check-profile .check-filter-grid .ant-select{height:38px;min-height:38px}
+.check-profile .check-filter-grid .ant-select-selector{height:38px!important;min-height:38px!important;box-sizing:border-box}
+.check-profile .check-filter-grid .ant-select-multiple .ant-select-selection-wrap{align-self:center}
+.check-profile .check-filter-grid .ant-input-affix-wrapper,
+.check-profile .check-filter-grid>.ant-btn{height:38px;box-sizing:border-box}
+.check-profile .check-filter-grid .ant-input{line-height:normal}
+.check-profile .check-two-column{align-items:stretch}
+.check-profile .check-two-column>.check-section{display:flex;flex-direction:column}
+.check-profile .check-section .institution-section-title{min-height:32px;align-items:center;margin-bottom:16px}
+.check-profile .check-section .institution-section-title h2{line-height:1.5}
+.check-profile .check-core-stats>article{display:flex;flex-direction:column;min-width:0}
+.check-profile .check-core-stats>article>span{line-height:18px}
+.check-profile .check-core-stats strong{line-height:1.4;white-space:nowrap}
+.check-profile .check-core-stats p{line-height:18px;margin-top:auto;padding-top:5px}
+.check-profile .check-overview-grid{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+.check-profile .check-top-cards{flex:1;grid-auto-rows:1fr}
+.check-profile .check-top-cards h3{min-height:34px;align-items:flex-start}
+.check-profile .check-top-cards button{flex-wrap:nowrap}
+.check-profile .check-top-cards button>span{overflow-wrap:anywhere}
+.check-profile .check-matrix{height:100%}
+.check-profile .check-two-column .institution-matrix-wrap{flex:1}
+.check-profile .check-matrix td{padding:0;height:48px}
+.check-profile .check-matrix td>span{padding:0 4px}
+.check-profile .check-matrix button{min-height:48px;padding:8px 4px}
+.check-profile .check-two-column>.check-section>.institution-note{margin-top:14px}
+.check-profile .check-ranking-grid>.check-section{min-height:430px}
+.check-profile .check-insurance-row{grid-template-columns:55px minmax(0,1fr) 105px}
+.check-profile .check-detail-table th:nth-child(7),
+.check-profile .check-detail-table th:nth-child(8),
+.check-profile .check-detail-table th:nth-child(9){text-align:right}
+.check-profile .check-detail-table th,
+.check-profile .check-detail-table td{vertical-align:middle}
+.check-profile .check-advice-stats>div{align-content:start}
+.check-profile .check-advice-stats p{line-height:18px}
+@media(max-width:1450px){
+ .check-profile .check-filter-grid{grid-template-columns:repeat(3,minmax(0,1fr)) auto}
+ .check-profile .check-filter-grid>label:nth-child(3){grid-column:3/5}
+ .check-profile .check-filter-grid>.ant-btn{grid-column:4;grid-row:2}
+ .check-profile .check-insurance-row{grid-template-columns:45px minmax(0,1fr) 95px}
+}
+@media(max-width:1200px){
+ .check-profile .check-overview-grid{grid-template-columns:1fr}
+ .check-profile .check-ranking-grid>.check-section{min-height:0}
+}
+@media(max-width:760px){
+ .check-profile .check-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .check-profile .check-filter-grid>label:nth-child(3){grid-column:auto}
+ .check-profile .check-filter-grid>.ant-btn{grid-column:2;grid-row:auto}
+ .check-profile .check-section .institution-section-title{align-items:flex-start}
+ .check-profile .check-core-stats strong{font-size:clamp(18px,4vw,23px)}
+ .check-profile .check-insurance-row{grid-template-columns:48px minmax(0,1fr) 82px}
+ .check-profile .check-top-cards h3{min-height:0}
+}
+
+
+.check-core-stats{gap:16px;margin-bottom:20px}.check-core-stats>article{position:relative;background:#fff;border-color:#e7edf6;padding:22px;border-radius:10px;min-width:0;overflow:hidden}.check-core-stats>article>span{font-size:13px;color:#7d8da5}.check-core-stats strong{font-size:clamp(24px,2.3vw,38px);letter-spacing:-.5px;margin-top:17px;line-height:1.25;color:#223049;overflow-wrap:anywhere}.check-core-stats strong.blue{color:#0156ff}.check-core-stats p{font-size:11px;color:#94a2b6;margin-top:12px}.check-overview-panel{border-color:#edf1f7;padding:20px}.check-region-bar>span:first-child{background:#0156ff}.check-region-bar>span+span{background:#ed8a23}.check-contribution i{background:#3b7cf4}.check-overview-panel h3{color:#29374d;font-size:14px}@media(max-width:760px){.check-core-stats>article{padding:16px}.check-core-stats strong{font-size:25px}}
+/* Concise headings and content-driven inspection cards. */
+.check-profile .check-section .institution-section-title{gap:12px 20px;margin-bottom:20px;min-height:32px;flex-shrink:0}
+.check-profile .check-section .institution-section-title h2{white-space:normal;min-width:0;font-size:16px;line-height:1.5}
+.check-profile .check-section .institution-controls{gap:10px;flex-shrink:0}
+.check-profile .check-overview-panel h3{margin-bottom:16px}
+.check-profile .check-panel-heading h3{margin-bottom:0}
+.check-profile .check-contribution{margin-top:18px}
+.check-profile .check-top-cards{flex:initial;grid-auto-rows:auto;align-content:start}
+.check-profile .check-top-cards h3{min-height:0;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 8px;margin-bottom:10px;font-size:11px;line-height:1.6}
+.check-profile .check-top-cards h3 small{font-size:10px;color:#97a7bd;font-weight:400}
+.check-profile .check-matrix{height:auto;table-layout:fixed;min-width:580px}
+.check-profile .check-matrix th:first-child{width:128px}
+.check-profile .check-matrix th{overflow-wrap:anywhere}
+.check-profile .check-matrix td{height:52px}
+.check-profile .check-matrix button{min-height:52px}
+.check-profile .check-ranking-grid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+.check-profile .check-ranking-grid>.check-section{min-height:0}
+.check-profile .check-insurance-legend{margin-bottom:20px;gap:10px 14px}
+.check-profile .check-insurance-bars{gap:28px;margin:24px 0}
+.check-profile .check-advice-stats{margin-bottom:16px}
+.check-profile .check-advice-stats p{display:none}
+.check-profile .check-advice-grid article{min-height:0}
+@media(max-width:1350px){
+ .check-profile .check-two-column{grid-template-columns:1fr}
+ .check-profile .check-matrix{min-width:620px}
+ .check-profile .check-advice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ .check-profile .check-section .institution-section-title{align-items:flex-start;margin-bottom:16px}
+ .check-profile .check-section .institution-controls{max-width:100%;margin-left:0;flex-wrap:wrap}
+ .check-profile .check-advice-grid{grid-template-columns:1fr}
+ .check-profile .check-top-cards{grid-template-columns:1fr}
+}
+
+/* Compact overview metrics: units in headings, values on a single line. */
+.check-profile .check-core-stats{gap:16px;margin-bottom:16px}
+.check-profile .check-core-stats>article{padding:12px 18px}
+.check-profile .check-core-stats strong{font-size:clamp(24px,2.3vw,34px);line-height:1.2;margin-top:6px}
+@media(max-width:760px){
+ .check-profile .check-core-stats{gap:9px}
+ .check-profile .check-core-stats>article{padding:10px 12px}
+ .check-profile .check-core-stats strong{font-size:clamp(14px,3.6vw,23px)}
+}

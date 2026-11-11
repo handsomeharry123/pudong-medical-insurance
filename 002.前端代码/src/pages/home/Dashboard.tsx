@@ -6,6 +6,7 @@ import { BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area, CartesianGrid, XAx
 import { money } from './regulator/data';
 import { snapshot, totals, risks, riskColors, riskStructure, settlement, trends, stages, progress, projectRanking, behaviorTotals, orgs, top10, sortRisk, summary, type Org, type Period } from './dashboard/model';
 import PudongMap3D from './dashboard/PudongMap3D';
+import { PROFILE_PATH } from '../analysis/profileData';
 import './Dashboard.css';
 
 function Panel({title,extra,children,className=''}:{title:string;extra?:ReactNode;children:ReactNode;className?:string}){return <section className={`history-panel ${className}`}><header><h2>{title}</h2>{extra}</header>{children}</section>;}
@@ -71,7 +72,7 @@ export default function Dashboard(){
  const visible=[...orgs.filter(o=>!riskFilter||o.risk===riskFilter)].sort(sort==='风险等级'?sortRisk:(a,b)=>b.latest-a.latest);
  const progressData=progress(casePeriod),projectData=projectRanking(projectMode);
  const conclusions=summary({mode,highOnly:riskFilter==='高风险',riskFilter,structure,trend,period:casePeriod,projectMode});
- const go=(org:Org,action:'profile'|'checks')=>navigate('/app/home/overview',{state:{regulatorEntry:{institution:org.code,action}}});
+ const go=(org:Org,action:'profile'|'checks')=>navigate(`${PROFILE_PATH}/${encodeURIComponent(org.code)}${action==='checks'?'#checks':''}`);
  const resetCore=()=>{setRiskFilter('');setMode('地图');setSelected(null);setSort('风险等级');setZoom(1.14);pause();};
  const regenerate=()=>{setSummaryTime(new Date().toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai',hour12:false}));pause();};
  return <div className={`history-dashboard ${expanded?'history-expanded':''}`} data-testid="history-dashboard">

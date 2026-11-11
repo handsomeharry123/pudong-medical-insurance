@@ -19,6 +19,7 @@ import {
   CloseOutlined,
   LoadingOutlined,
   MenuFoldOutlined,
+  MenuUnfoldOutlined,
   PlusOutlined,
   SearchOutlined,
   ToolOutlined,
@@ -353,10 +354,8 @@ const HomeSidebarV2 = ({ onNewTask, onRestoreSession, onRestoreRun, initialActiv
   );
 
   /* 1.1 工具区:收起 / 搜索 */
-  const handleCollapse = () => {
-    // 联动全局 ProLayout 折叠状态:点击后左侧 7 菜单立刻收起/展开
-
-  };
+  const [collapsed, setCollapsed] = useState(false);
+  const handleCollapse = () => setCollapsed(value => !value);
   const handleSearch = () => {
     setSearchOpen(true);
   };
@@ -377,6 +376,9 @@ const HomeSidebarV2 = ({ onNewTask, onRestoreSession, onRestoreRun, initialActiv
 
   return (
     <>
+      {collapsed && <div className="assistant-menu-collapsed">
+        <Tooltip title="展开医小保菜单" placement="right"><Button type="text" aria-label="展开医小保菜单" aria-expanded={false} icon={<MenuUnfoldOutlined />} onClick={handleCollapse} /></Tooltip>
+      </div>}
       <Card
         bordered={false}
         styles={{
@@ -392,7 +394,7 @@ const HomeSidebarV2 = ({ onNewTask, onRestoreSession, onRestoreRun, initialActiv
             gap: 12,
           },
         }}
-        style={{ height: '100%' }}
+        style={{ height: '100%', display: collapsed ? 'none' : undefined }}
       >
         {/* ============ 1.1 + 1.3 工具区 + 工作台(同一行) ============ */}
         <div
@@ -406,6 +408,9 @@ const HomeSidebarV2 = ({ onNewTask, onRestoreSession, onRestoreRun, initialActiv
         >
           <SectionTitle>工作台</SectionTitle>
           <Space size={4}>
+            <Tooltip title={collapsed ? '展开医小保菜单' : '收起医小保菜单'}>
+              <Button type="text" size="small" aria-label={collapsed ? '展开医小保菜单' : '收起医小保菜单'} aria-expanded={!collapsed} icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} onClick={handleCollapse} />
+            </Tooltip>
             <Tooltip title="搜索对话任务">
               <Button
                 type="text"

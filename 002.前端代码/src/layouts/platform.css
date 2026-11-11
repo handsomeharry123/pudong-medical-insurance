@@ -15,3 +15,77 @@
 .platform-account:focus-visible,.platform-switch a:focus-visible{outline:2px solid #2469e8;outline-offset:3px;}
 @media(max-width:900px){.platform-header{padding:0 14px;gap:10px}.platform-brand{font-size:14px;white-space:normal;max-width:55%}.platform-switch a{padding:0 12px;min-height:34px}.platform-header-right{gap:8px}.platform-header-divider,.platform-account>span:last-child{display:none}}
 body[data-app-theme='tech'] .platform-header{background:#0f1830;border-color:#243451}body[data-app-theme='tech'] .platform-brand{color:#e8f1ff}body[data-app-theme='tech'] .platform-shell{background:#0b1224}body[data-app-theme='tech'] .platform-switch a{color:#9fb0ca}body[data-app-theme='tech'] .platform-switch a:hover{background:#1b2944;color:#d6e6ff}body[data-app-theme='tech'] .platform-switch a.selected{background:#213856;border-color:#304b70;color:#a9d1ff}body[data-app-theme='tech'] .platform-account{color:#ceddf3}
+.platform-body{display:flex;min-height:calc(100dvh - 64px)}
+.platform-body>.platform-content{flex:1;min-width:0}
+/* 业务工作台使用视口内布局，右侧内容与系统目录分别滚动。 */
+.platform-shell:not(.platform-shell-dashboard){height:100dvh;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.platform-shell:not(.platform-shell-dashboard)>.platform-header{flex:0 0 64px}
+.platform-shell:not(.platform-shell-dashboard)>.platform-body{flex:1;min-height:0;overflow:hidden}
+.platform-shell:not(.platform-shell-dashboard)>.platform-body>.platform-content{min-height:0;overflow:auto;overscroll-behavior:contain}
+.platform-shell:not(.platform-shell-dashboard) .platform-navigation{position:relative;top:auto;height:100%;min-height:0}
+.platform-navigation{width:240px;flex:0 0 240px;position:sticky;top:64px;height:calc(100dvh - 64px);box-sizing:border-box;background:#fafafa;border-right:1px solid #e3e7ed;padding:18px 12px;transition:width .2s,flex-basis .2s}
+.platform-navigation nav{display:flex;flex-direction:column;gap:6px;height:100%;overflow-y:auto}
+.platform-navigation nav a{position:relative;display:flex;align-items:center;gap:12px;min-height:46px;padding:0 14px;border-radius:6px;color:#62666c;font-size:14px;text-decoration:none;white-space:nowrap}
+.platform-navigation nav a>.anticon{font-size:17px;flex-shrink:0}
+.platform-navigation nav a:hover{background:#eef2f7;color:#2674ec}
+.platform-navigation nav a.active{background:#e6f4ff;color:#1677ff;font-weight:500}
+.platform-navigation nav a.active:before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:3px;background:#1677ff;border-radius:2px}
+.platform-nav-toggle{position:absolute;right:-13px;top:18px;z-index:3;width:26px;height:26px;border-radius:50%;border:1px solid #e9edf2;background:#fff;color:#9aa1ac;box-shadow:0 2px 6px #182a450a;display:grid;place-items:center;cursor:pointer}
+.platform-nav-toggle:hover{color:#1677ff;border-color:#a7c9fa}
+.platform-navigation.is-collapsed{width:64px;flex-basis:64px;padding-inline:8px}
+.platform-navigation.is-collapsed nav a{justify-content:center;padding:0}
+.platform-navigation.is-collapsed .platform-nav-label{display:none}
+.platform-navigation a:focus-visible,.platform-nav-toggle:focus-visible{outline:2px solid #1677ff;outline-offset:2px}
+.platform-module-page{margin:16px;background:white;border:1px solid #e8edf4;border-radius:10px;min-height:calc(100dvh - 98px);display:flex;flex-direction:column}
+.platform-module-page>header{padding:20px 24px;border-bottom:1px solid #edf0f5}
+.platform-module-page h1{font-size:18px;font-weight:600;margin:0}
+.platform-module-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;color:#8b97a8;text-align:center}
+.platform-module-icon{width:64px;height:64px;display:grid;place-items:center;border-radius:18px;background:#f0f5fc;color:#8ea6c7;font-size:28px;margin-bottom:8px}
+.platform-module-empty h2{font-size:17px;font-weight:500;color:#5d6c80;margin:16px 0 8px}
+.platform-module-empty p{font-size:13px;margin:0}
+@media(min-width:1101px){.platform-content .reg-sidebar{width:280px}}
+@media(max-width:1100px) and (min-width:761px){.platform-navigation{width:210px;flex-basis:210px}.platform-navigation nav a{font-size:13px;padding-inline:10px;gap:9px}.platform-content .reg-sidebar{width:220px}.platform-content .reg-workspace{gap:12px;padding:12px}}
+@media(max-width:760px){.platform-navigation,.platform-navigation.is-collapsed{width:56px;flex-basis:56px;padding:14px 5px}.platform-navigation nav a{justify-content:center;padding:0}.platform-navigation .platform-nav-label{display:none}.platform-nav-toggle{display:none}.platform-module-page{margin:8px}}
+body[data-app-theme='tech'] .platform-navigation{background:#0f1830;border-color:#243451}body[data-app-theme='tech'] .platform-navigation nav a{color:#9fb0ca}body[data-app-theme='tech'] .platform-navigation nav a.active{background:#213856;color:#a9d1ff}
+
+/* 两个工作空间始终可见，保持大屏与业务模块之间的双向入口。 */
+.platform-switch a{gap:7px}
+.platform-switch a>.anticon{font-size:14px}
+.platform-shell-dashboard .platform-body{min-height:calc(100dvh - 52px)}
+@media(max-width:600px){.platform-header,.platform-shell-dashboard .platform-header{gap:8px;padding-inline:10px}.platform-brand,.platform-shell-dashboard .platform-brand{flex:1;min-width:0;max-width:none;font-size:12px;gap:6px}.platform-brand>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.platform-brand img{width:26px;height:26px;flex-shrink:0}.platform-header-right{gap:6px;flex-shrink:0}.platform-switch{gap:3px}.platform-switch a{padding-inline:8px;font-size:12px;gap:4px}.platform-switch a>.anticon{display:none}}
+
+/* 医小保菜单与系统目录各自折叠，保留独立恢复入口。 */
+.assistant-menu-collapsed{height:100%;box-sizing:border-box;display:flex;align-items:center;flex-direction:column;padding:12px 4px;background:#fff;border-radius:10px}
+.platform-content .reg-sidebar:has(.assistant-menu-collapsed){width:48px}
+.platform-content .ant-col:has(>.assistant-menu-collapsed){flex:0 0 48px;max-width:48px}
+.platform-content .ant-col:has(>.assistant-menu-collapsed)+.ant-col{flex:1;max-width:calc(100% - 48px)}
+/* 系统导航：父级只负责展开，路由选中态只落在具体功能项。 */
+.platform-navigation{background:#fff;border-color:#e7edf6;padding:18px 10px}
+.platform-navigation nav{gap:4px}
+.platform-navigation nav a,.platform-nav-group-trigger{min-height:44px;border-radius:9px;gap:10px;color:#6b7e99;font-size:14px;padding:0 13px;box-sizing:border-box}
+.platform-navigation nav a>.anticon,.platform-nav-group-trigger>.anticon{color:#98abc5;font-size:17px;flex-shrink:0}
+.platform-navigation nav a:hover,.platform-nav-group-trigger:hover{color:#0156ff;background:#f4f7fe}
+.platform-navigation nav a.active{background:#eaf1ff;color:#0156ff;font-weight:600}
+.platform-navigation nav a.active>.anticon{color:#0156ff}
+.platform-navigation nav a.active:before{background:#0156ff;left:0;top:10px;bottom:10px}
+.platform-nav-group-trigger{appearance:none;border:0;background:transparent;font-family:inherit;width:100%;cursor:pointer;display:flex;align-items:center;text-align:left;position:relative;transition:background .16s,color .16s}
+.platform-nav-group.has-active-child>.platform-nav-group-trigger{color:#385b94;font-weight:500}
+.platform-nav-group.has-active-child>.platform-nav-group-trigger>.anticon:first-child{color:#6189c9}
+.platform-navigation .platform-nav-group-trigger .platform-menu-chevron{margin-left:auto;font-size:10px;color:#91a3bc;transform:rotate(-90deg);transition:transform .16s}
+.platform-navigation .platform-nav-group-trigger .platform-menu-chevron.is-open{transform:rotate(0)}
+.platform-submenu{margin:3px 0 6px}
+.platform-navigation nav .platform-subnav{min-height:44px;margin:0;padding:0 10px 0 43px;border:0;border-radius:8px;font-size:14px;font-weight:400;color:#6b7e99}
+.platform-navigation nav .platform-subnav.active{background:#eaf1ff;color:#0156ff;font-weight:400}
+.platform-navigation nav .platform-subnav.active:before{content:none}
+.platform-nav-group-trigger:focus-visible{outline:2px solid #0156ff;outline-offset:-2px}
+.platform-navigation.is-collapsed .platform-nav-group-trigger{justify-content:center;padding:0}
+.platform-nav-group-trigger.is-current{background:#eaf1ff;color:#0156ff}
+.platform-nav-group-trigger.is-current>.anticon{color:#0156ff}
+.platform-nav-flyout{min-width:200px;padding:4px}
+.platform-nav-flyout>span{display:block;color:#96a6bc;font-size:11px;padding:5px 10px 10px}
+.platform-nav-flyout>a{display:block;text-decoration:none;color:#637795;padding:11px 12px;font-size:14px;border-radius:7px}
+.platform-nav-flyout>a:hover{background:#f4f7fe;color:#0156ff}
+.platform-nav-flyout>a.active{background:#eaf1ff;color:#0156ff;font-weight:500}
+.platform-nav-flyout>a:focus-visible{outline:2px solid #0156ff}
+.platform-submenu-popover .ant-popover-inner{border:1px solid #e7edf6;border-radius:10px;box-shadow:0 6px 24px #18365d12;padding:8px}
+@media(max-width:760px){.platform-navigation .platform-nav-group-trigger{justify-content:center;padding:0}.platform-navigation .platform-submenu{display:none}}
