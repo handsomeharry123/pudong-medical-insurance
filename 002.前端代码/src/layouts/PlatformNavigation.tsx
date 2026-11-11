@@ -6,8 +6,8 @@ import { RobotOutlined, AuditOutlined, BarChartOutlined, ScheduleOutlined, Safet
 export const NavigationContext = createContext({ collapsed: false, toggle: () => {} });
 export const usePlatformNavigation = () => useContext(NavigationContext);
 export const platformModules = [
-  { key: 'review', title: '医保经办审核', icon: <AuditOutlined /> },
   { key: 'analysis', title: '医保数据分析', icon: <BarChartOutlined /> },
+  { key: 'review', title: '医保经办审核', icon: <AuditOutlined /> },
   { key: 'procurement', title: '集采计划执行进度跟踪', icon: <ScheduleOutlined /> },
   { key: 'care', title: '长护险监管', icon: <SafetyCertificateOutlined /> },
   { key: 'audit', title: '审计中心', icon: <FileSearchOutlined /> },
