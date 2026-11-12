@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Avatar, Dropdown } from 'antd';
-import { AppstoreOutlined, BarChartOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../hooks/useTheme';
 import './platform.css';
@@ -29,11 +29,6 @@ export default function BasicLayout() {
         <img src="/logo.svg" alt="" /><span>浦东新区医保数据治理与一体化应用平台</span>
       </NavLink>
       <div className="platform-header-right">
-        <nav className="platform-switch" aria-label="平台主导航">
-          <NavLink to="/app/home/overview" className={!dashboard ? 'selected' : ''} aria-current={!dashboard ? 'page' : undefined} onClick={() => setCollapsed(false)}><AppstoreOutlined /><span>业务工作台</span></NavLink>
-          <NavLink to="/app/home/dashboard" className={dashboard ? 'selected' : ''} aria-current={dashboard ? 'page' : undefined}><BarChartOutlined /><span>数据大屏</span></NavLink>
-        </nav>
-        <span className="platform-header-divider" />
         <Dropdown trigger={['click']} menu={{ items: [
           { key: 'logout', label: '退出登录', icon: <LogoutOutlined />, danger: true },
         ], onClick: ({ key }) => {

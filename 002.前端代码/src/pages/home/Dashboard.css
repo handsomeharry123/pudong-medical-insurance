@@ -176,3 +176,10 @@
 .history-trend-label{display:grid;grid-template-columns:auto auto;align-content:center;align-items:baseline;justify-content:start;gap:2px 4px;padding:0 0 0 3px}.history-trend-label>span{grid-column:1/-1;font-size:9px;line-height:1.1}.history-trend-label strong{font-size:17px;line-height:1}.history-trend-label small{font-size:8px;margin-left:2px}.history-trend-label em{font-size:8px;white-space:nowrap;line-height:1}.history-trend-spark{overflow:hidden}
 @media(min-height:900px) and (min-width:1500px){.history-trend-label{gap:4px}.history-trend-label>span{font-size:11px}.history-trend-label strong{font-size:21px}.history-trend-label em{font-size:9px}}
 @media(max-height:700px) and (min-width:1001px){.history-trend-label{gap:1px 3px}.history-trend-label>span{font-size:8px}.history-trend-label strong{font-size:14px}.history-trend-label em,.history-trend-label small{font-size:7px}}
+
+/* Navigation anchors the left edge; presentation controls stay on the right. */
+.history-heading>.history-back.ant-btn{position:absolute;left:10px;top:2px;z-index:1;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 8px;color:#b6d7ef;background:transparent;border:1px solid transparent;border-radius:4px;font-size:12px;box-shadow:none}
+.history-heading>.history-back.ant-btn:hover{color:#e4fbff;background:#154764;border-color:#28708e}
+.history-heading>.history-back.ant-btn:active{background:#1b5673}
+@media(min-width:1001px) and (max-height:700px){.history-heading>.history-back.ant-btn{top:1px;height:24px;font-size:11px}}
+@media(max-width:700px){.history-heading{height:144px}.history-heading>.history-back.ant-btn{left:5px;top:4px;height:32px;font-size:12px}.history-heading h1{top:44px}.history-heading p{bottom:37px}.history-heading-actions{bottom:5px}.history-heading-actions>.ant-btn{height:28px;font-size:11px}.history-heading-actions label{font-size:11px}}

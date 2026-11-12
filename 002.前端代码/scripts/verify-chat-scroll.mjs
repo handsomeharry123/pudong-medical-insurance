@@ -1,0 +1,33 @@
+import { chromium } from 'playwright';
+import assert from 'node:assert/strict';
+const browser=await chromium.launch();
+try {
+ const page=await browser.newPage({viewport:{width:1440,height:900}});
+ await page.addInitScript(()=>sessionStorage.setItem('pudong-auth-user','user-000'));
+ await page.goto('http://localhost:3001/app/home/overview');
+ const gap=()=>page.locator('.reg-chat-scroll').evaluate(el=>el.scrollHeight-el.clientHeight-el.scrollTop);
+ const send=async text=>{await page.getByRole('textbox',{name:'监管问题输入'}).fill(text);await page.getByRole('button',{name:'发送问题',exact:true}).click();};
+ await page.locator('.reg-module-card').first().click();
+ await page.waitForTimeout(100);
+ assert.ok(await gap()<2,'entry response is visible at bottom');
+ await page.locator('.reg-module-card').last().click();
+ await page.waitForTimeout(150);
+ assert.ok(await gap()<2,'large entry cards scroll to latest');
+ await send('查看高风险机构');
+ await page.waitForTimeout(100);
+ assert.ok(await gap()<2,'sent message and processing stay visible');
+ await page.locator('.reg-chat-scroll').evaluate(el=>el.scrollTop=0);
+ await page.waitForTimeout(100);
+ await page.waitForSelector('.reg-processing',{state:'hidden'});
+ await page.waitForTimeout(100);
+ assert.equal(await page.locator('.reg-chat-scroll').evaluate(el=>el.scrollTop),0,'reply must not interrupt history reading');
+ await page.getByRole('button',{name:'回到最新消息'}).click();
+ assert.ok(await gap()<2,'return to latest works');
+ await page.locator('.reg-chat-scroll').evaluate(el=>el.scrollTop=0);
+ await page.waitForTimeout(100);
+ await send('医保数据分析');
+ await page.waitForTimeout(100);
+ assert.ok(await gap()<2,'sending from history resumes follow');
+ assert.equal(await page.evaluate(()=>window.scrollY),0,'outer page stays fixed');
+ console.log('PASS: entry cards, sending, processing, history reading, return to latest and scoped scrolling');
+} finally {await browser.close();}

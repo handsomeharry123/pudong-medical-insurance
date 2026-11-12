@@ -1,4 +1,4 @@
-export const SCENES = ['浦东新区医疗机构监管概况', '医疗机构监管画像', '单次监管检查分析'] as const;
+export const SCENES = ['浦东新区医疗机构监管概况', '医疗机构监管画像', '监管履历查询'] as const;
 export const SNAPSHOT = '2026-11-09';
 export const PARAM_VERSION = 'PD-RISK-2026-V1';
 export const BEHAVIORS = ['串换药品','不必要医药服务','过度诊疗','超范围支付','重复收费','超量开药','过度检查','分解处方'];
@@ -39,4 +39,8 @@ export function indicators(c:Check){
 export const behaviorData=(c:Check)=>BEHAVIORS.map((name,i)=>({name,amount:Math.round(c.fee*feeShares[i]),contribution:+(c.score*feeShares[i]).toFixed(2)}));
 export const riskTrend=[{year:'2021',high:4,medium:26,low:78},{year:'2022',high:7,medium:32,low:80},{year:'2023',high:8,medium:34,low:81},{year:'2024',high:9,medium:32,low:82},{year:'2025',high:10,medium:31,low:83},{year:'2026',high:12,medium:28,low:84}];
 export const sources=[{name:'医疗机构档案库',id:'ORG-SNAPSHOT-20261109'},{name:'检查结果库',id:'CHECK-RESULT-20261109'},{name:'风险指标库',id:PARAM_VERSION},{name:'监管流程库',id:'FLOW-SNAPSHOT-20261109'}];
-export const metricData=[{title:'高风险机构数',value:12,unit:'家',label:'实时',color:'#3979ef'},{title:'未办结检查数',value:37,unit:'次',label:'实时',color:'#18aaa8'},{title:'本月新增超期检查',value:5,unit:'次',label:'本月',color:'#ed9b32'}];
+export const metricData=[
+ {title:'高风险机构数',value:institutions.filter(i=>i.risk==='高风险').length,unit:'家',label:'当前',color:'#3979ef',action:'查看高风险机构',definition:'按机构代码去重，取最新有效评级为高风险的机构'},
+ {title:'本月风险等级上升机构数',value:institutions.filter(i=>i.rising).length,unit:'家',label:'本月',color:'#ed9b32',action:'查看风险等级上升机构',definition:'比较本月与上月有效评级，统计等级上升的机构'},
+ {title:'未办结检查数',value:checks.filter(c=>c.stage!=='形成结果').length,unit:'次',label:'当前',color:'#18aaa8',action:'查看未办结检查',definition:'按检查批次统计，当前阶段非“形成结果”为未办结'}
+];

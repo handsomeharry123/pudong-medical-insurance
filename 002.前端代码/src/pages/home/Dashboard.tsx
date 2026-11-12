@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Segmented, Switch, Tooltip as Hint } from 'antd';
-import { CloseOutlined, ExpandOutlined, ShrinkOutlined, ReloadOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, CloseOutlined, ExpandOutlined, ShrinkOutlined, ReloadOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { money } from './regulator/data';
 import { snapshot, totals, risks, riskColors, riskStructure, settlement, trends, stages, progress, projectRanking, behaviorTotals, orgs, top10, sortRisk, summary, type Org, type Period } from './dashboard/model';
@@ -76,7 +76,7 @@ export default function Dashboard(){
  const resetCore=()=>{setRiskFilter('');setMode('地图');setSelected(null);setSort('风险等级');setZoom(1.14);pause();};
  const regenerate=()=>{setSummaryTime(new Date().toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai',hour12:false}));pause();};
  return <div className={`history-dashboard ${expanded?'history-expanded':''}`} data-testid="history-dashboard">
- <div className="history-heading"><div><div className="history-eyebrow">PUDONG · MEDICAL INSTITUTION SUPERVISION</div><h1>医疗机构监管履历大屏</h1><p>数据覆盖周期：2022-01-01 — {snapshot} <i/> 最新更新：{snapshot} 18:00</p></div><div className="history-heading-actions"><label title={auto?(paused?'交互中暂停':'每8秒切换'):'已关闭'}><Switch size="small" checked={auto} aria-label="自动轮播" onChange={value=>{setAuto(value);lastInteraction.current=Date.now();setClock(Date.now());}}/>自动轮播</label><Button icon={expanded?<ShrinkOutlined/>:<ExpandOutlined/>} onClick={()=>{setExpanded(!expanded);pause();}}>{expanded?'退出大屏':'展开大屏'}</Button></div></div>
+ <div className="history-heading"><Button className="history-back" type="text" icon={<ArrowLeftOutlined/>} onClick={()=>navigate(PROFILE_PATH)} data-testid="dashboard-back">返回监管首页</Button><div><div className="history-eyebrow">PUDONG · MEDICAL INSTITUTION SUPERVISION</div><h1>医疗机构监管履历大屏</h1><p>数据覆盖周期：2022-01-01 — {snapshot} <i/> 最新更新：{snapshot} 18:00</p></div><div className="history-heading-actions"><label title={auto?(paused?'交互中暂停':'每8秒切换'):'已关闭'}><Switch size="small" checked={auto} aria-label="自动轮播" onChange={value=>{setAuto(value);lastInteraction.current=Date.now();setClock(Date.now());}}/>自动轮播</label><Button icon={expanded?<ShrinkOutlined/>:<ExpandOutlined/>} onClick={()=>{setExpanded(!expanded);pause();}}>{expanded?'退出大屏':'展开大屏'}</Button></div></div>
  <div className="history-kpis">
  <button onClick={()=>{setMode('机构列表');setRiskFilter('');setSelected(null);pause();}} data-testid="kpi-institutions"><span>监管机构</span><strong>{totals.institutions}<em>家</em></strong><p>已纳入评级 {totals.institutions} 家 · 覆盖率 100%</p></button>
  <button className={riskFilter==='高风险'?'selected':''} aria-pressed={riskFilter==='高风险'} onClick={()=>riskFilter==='高风险'?resetCore():filter('高风险')} data-testid="kpi-high"><span>高风险机构</span><strong>{totals.high}<em>家</em></strong><p><b>较上月 +2 家</b></p></button>

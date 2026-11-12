@@ -1,16 +1,19 @@
+import { respondHistory } from './historyFlow';
+import { respondDistrict, districtQuestions, districtWelcome, type DistrictQuery } from './district';
+import { portraitRespond, portraitWelcome } from './portrait';
 import rawCatalog from './catalog.json';
 import { checks, currentCheck, DEFAULT_INST, history, institutions, money, SCENES, PARAM_VERSION, SNAPSHOT, type Check, type Institution } from './data';
 export const catalog=rawCatalog;
 export type Scene=1|2|3;
-export type View='overview'|'institutions'|'trend'|'levels'|'progress'|'checks'|'timeline'|'cross'|'tasks'|'task'|'profile'|'attribution'|'check'|'behavior'|'matrix'|'projects'|'history'|'benchmark'|'dimensions'|'suggestions'|'report'|'candidates'|'materials';
-export type Context={scene:Scene;institution?:string;batch?:string;year:string;risk?:string;level?:string;stage?:string;overdue?:boolean;unfinished?:boolean;start?:string;end?:string;rising?:boolean;behavior?:string;visit?:string;region?:string;checkType?:string;comparison?:string;analysis:number[];reportVersion:number;reportFocus?:string;pending?:string;trendYear?:string};
+export type View='portrait'|'district'|'overview'|'institutions'|'trend'|'levels'|'progress'|'checks'|'timeline'|'cross'|'tasks'|'task'|'profile'|'attribution'|'check'|'behavior'|'matrix'|'projects'|'history'|'benchmark'|'dimensions'|'suggestions'|'report'|'candidates'|'materials';
+export type Context={reportGeneratedAt?:string;portraitStep?:string;portraitCandidates?:string[];portraitDone?:string[];reportModules?:string[];reportScope?:string;reportRange?:string;reportChanges?:string;district?:DistrictQuery;scene:Scene;institution?:string;batch?:string;year:string;risk?:string;level?:string;stage?:string;overdue?:boolean;unfinished?:boolean;start?:string;end?:string;rising?:boolean;behavior?:string;visit?:string;region?:string;checkType?:string;comparison?:string;analysis:number[];reportVersion:number;reportFocus?:string;pending?:string;recordCodes?:string[];recordSort?:string;recordLimit?:number;recordIds?:string[];reportSections?:string[];reportBrief?:boolean;reportRevisions?:string[];trendYear?:string};
 export type Result={node:number;content:string;steps:string[];views:View[];actions:string[];context:Context;citations:string[]};
 export const newContext=():Context=>({scene:1,year:'2026',analysis:[],reportVersion:0});
 export const welcomes=[
-'您好！我是浦东新区医疗机构监管智能助手。您可以向我查询全区医疗机构的风险分布、风险变化趋势、不同结算等级的风险情况，以及各年度检查的办理进度、未办结检查和具体批次进度。您也可以直接输入机构名称、机构代码或检查批次号，我将为您生成监管概况、筛选列表和可视化分析，并支持逐级查看机构画像和单次检查详情。',
-'您好！我是医疗机构监管画像助手。请输入您要查询的医疗机构名称或机构代码，我将为您生成该机构的监管画像，并展示其当前风险等级、历次风险变化、违规费用及主要风险构成。\n\n画像生成后，您可以继续追溯该机构为什么风险较高，也可以查看其在浦东新区的排名、与其他机构进行比较、获取监管建议、生成报告，或选择某次检查查看完整情况。',
-'您好！我是浦东新区医疗机构监管智能助手。您可以直接输入医疗机构名称或检查批次号，查询机构有效监管检查记录。我可以为您展示本次检查的风险指数、主要违规行为，并支持与该机构历史检查记录、同类型医疗机构开展对比分析，进一步从行为认定、具体项目、就医类型及本地 / 异地等维度穿透分析，识别重点风险问题，生成监管关注建议和单次检查分析报告。'];
-export const sceneQuestions=[['我想了解全区医疗机构监管结果。','我想了解浦东新区医疗机构监管进度情况。','高风险机构中还有哪些检查没有办结？'],['帮我查看浦东新区中医医院的监管画像。','查询机构代码PDYB-310115-001对应机构的画像。'],['帮我看看浦东新区中医医院最近一次监管检查的情况。','查看浦东新区中医医院FXJC-2026-011批次的监管检查情况。']];
+districtWelcome,
+portraitWelcome,
+'您好！我是医小保。\n\n您可以直接告诉我想查询的监管信息，支持按医疗机构、时间范围、检查批次、监管阶段、风险等级等条件检索，也可以组合多个条件进行查询。\n\n例如：查询某医疗机构本年度全部监管记录；查看某医疗机构最近一次检查情况；查询全区风险最高的5条监管记录。'];
+export const sceneQuestions=[districtQuestions,['帮我查看浦东新区中医医院的监管画像。','查询机构代码PDYB-310115-001对应机构的画像。'],['查询浦东新区中医医院本年度全部监管记录。','查看浦东新区中医医院最近一次检查情况。','查询全区风险最高的5条监管记录。']];
 const views:View[][]=[
 ['overview','levels'],['institutions'],['profile'],['trend'],['institutions'],['levels'],['institutions'],['progress'],['checks'],['timeline'],['candidates'],['check'],['progress','checks'],['cross'],['tasks'],['task'],
 ['profile'],['profile'],['attribution'],['checks','history'],['attribution','dimensions'],['checks','behavior','matrix','dimensions','projects'],['benchmark','history'],['behavior','matrix','history'],['projects','checks'],['benchmark','history'],['benchmark','dimensions'],['benchmark','projects','history'],['suggestions'],['suggestions','projects'],['report'],['report'],['checks'],['check'],['check'],
@@ -29,9 +32,9 @@ const overrides:Record<number,(c:Context,i:Institution,b:Check)=>string>={
 27:(_,i,b)=>`已锁定重复收费，按同一数据范围分别比较总额与次均金额，并展示项目、门诊/住院和本异地构成。当前${b.batch}批次重复收费${money(b.fee*.35)}元；相关检查与项目均可继续下钻。`,
 28:(_,i,b)=>`建议将${i.name}纳入持续关注范围，优先复核${b.batch}中的重复收费和超范围支付；重点核查门诊、本地费用与高金额项目，结合历史记录确认问题是否持续。以下建议仅引用本轮已完成分析，未开展的横向对标需补充核验。可继续查看依据、生成报告或查看单次检查。`,
 29:(_,i,b)=>`建议优先核查重复收费，因为当前${b.batch}中该行为金额${money(b.fee*.35)}元，占35%，是金额最高的行为认定。可继续核对原始指标、关联项目与历史批次；如尚未开展全区排名或历史对比，不据此宣称已完成相关分析。`,
-37:(_,i,b)=>`本次检查涉及7类非零行为认定。重复收费${money(b.fee*.35)}元，占35%；超范围支付${money(b.fee*.25)}元，占25%；串换药品${money(b.fee*.15)}元，占15%。费用占比与演示风险贡献分开展示。可展开具体行为、就医类型或开展历史对比。`,
+37:(_,i,b)=>`本次检查涉及7类非零行为认定。重复收费${money(b.fee*.35)}元，占35%；超范围支付${money(b.fee*.25)}元，占25%；串换药品${money(b.fee*.15)}元，占15%。费用占比与风险贡献分开展示。可展开具体行为、就医类型或开展历史对比。`,
 38:(c,i,b)=>`已展开${c.behavior||'串换药品'}专项分析，批次${b.batch}。可在128项三级指标中按就医类型与本地/异地筛选，查看对应金额与来源记录；进一步支持具体项目明细和多维组合查询。`,
-39:(_,i,b)=>`本次串换药品金额${money(b.fee*.15)}元，涉及药品、诊疗项目及医用耗材三类演示项目。项目列表支持按名称筛选、查看金额及就医类型分布。`,
+39:(_,i,b)=>`本次串换药品金额${money(b.fee*.15)}元，涉及药品、诊疗项目及医用耗材三类项目。项目列表支持按名称筛选、查看金额及就医类型分布。`,
 41:(_,i)=>`该机构此前有效检查中，重复收费和超范围支付多次出现。下方逐批次展示风险指数、费用和行为变化，可点击历史批次进一步比较；“重复”与“新增”以原始指标是否出现为依据。`,
 42:(_,i,b)=>`本次检查新增超量开药行为，相关金额${money(b.fee*.05)}元，占本次费用5%。以下展示新增行为及对应指标，与上次检查的差异分别列示。`,
 43:(_,i,b)=>`已按同机构类型、检查类型和统一评分参数匹配可比检查记录。当前批次${b.batch}单次指数${b.score}分；下方展示同类型机构参照结果、主要行为差异和机构对标入口。`,
@@ -40,7 +43,7 @@ const overrides:Record<number,(c:Context,i:Institution,b:Check)=>string>={
 46:(_,i,b)=>`本次违规费用主要集中在门诊和住院，门诊${money(b.fee*.45)}元，住院${money(b.fee*.30)}元。可继续查看住院违规行为，或按本地/异地拆分128项指标。`,
 47:(_,i,b)=>`已锁定住院维度。住院相关违规费用${money(b.fee*.30)}元，主要集中在重复收费与超范围支付。下方可继续选择行为认定、本地/异地及对应三级指标。`,
 48:(_,i,b)=>`本次检查本地费用${money(b.fee*.8)}元，异地费用${money(b.fee*.2)}元；两类费用分别按行为认定与就医类型展示，可查看交叉矩阵并继续筛选。`,
-49:(_,i,b)=>`本次过度诊疗费用${money(b.fee*.10)}元，涉及三类演示项目，主要就医类型为门诊。以下展示项目及金额，支持按名称查询及查看明细。`,
+49:(_,i,b)=>`本次过度诊疗费用${money(b.fee*.10)}元，涉及三类项目，主要就医类型为门诊。以下展示项目及金额，支持按名称查询及查看明细。`,
 51:(_,i,b)=>`建议重点关注：一是${b.batch}中重复收费费用占35%，对风险指数贡献较大；二是与此前检查重复出现的问题，需核验是否持续；三是同类型机构中偏离参考水平的指标。已完成和未开展的分析分开标注，避免将待核查事项作为已认定事实。可继续生成具体核查建议或检查分析报告。`,
 52:(_,i,b)=>`建议围绕${b.batch}的重复收费与超范围支付，重点复核门诊、住院及具体高金额项目；结合历史重复问题及同类机构差异核查原始凭证。每项建议关联指标记录、历史批次和核查方向，供业务人员后续监管参考。`,
 
@@ -90,6 +93,12 @@ export function resolveNode(text:string,c:Context){
  return -1;
 }
 export function respond(text:string,previous:Context,forced?:number):Result{
+ if(previous.scene===1&&text==='查看完整机构画像'&&previous.institution)return respond(`查看${previous.institution}的监管画像。`,{...previous,scene:2,district:undefined},16);
+ if(previous.scene===1&&text==='查看单次检查详情'&&previous.batch)return respond(`查看${previous.batch}批次的监管检查情况。`,{...previous,scene:3,district:undefined},36);
+ if(previous.scene===2)return portraitRespond(text,previous);
+ const district=respondDistrict(text,previous);if(district)return district;
+ if(previous.scene===3 && !/监管画像|机构画像/.test(text))return respondHistory(text,previous);
+ if(/监管画像|机构画像|查看.*的画像/.test(text))return portraitRespond(text,previous);
  let c:Context={...previous,analysis:[...previous.analysis]};
  let n=forced??resolveNode(text,c);
  let includeProfile=false;
@@ -107,7 +116,7 @@ export function respond(text:string,previous:Context,forced?:number):Result{
  if(n<0&&inst)n=c.scene===3?35:16;
  if(n<0&&b)n=36;
  if(n<0)return output('我可以帮助查询全区监管概况、生成医疗机构监管画像，或分析单次监管检查。请补充机构名称、机构代码或检查批次号，也可从下方问题开始。');
- if(/医院|机构代码PDYB/.test(text)&&!inst&&!b&&!/这家|同类|XX医院|机构.*相比/.test(text)&&!catalog.some(q=>q.prompt===text))return output('未匹配到唯一医疗机构，请核对完整机构名称或机构代码。演示机构可选择：', ['candidates'], ['帮我查看浦东新区中医医院的监管画像。','帮我查看浦东新区人民医院的监管画像。']);
+ if(/医院|机构代码PDYB/.test(text)&&!inst&&!b&&!/这家|同类|XX医院|机构.*相比/.test(text)&&!catalog.some(q=>q.prompt===text))return output('未匹配到唯一医疗机构，请核对完整机构名称或机构代码。机构可选择：', ['candidates'], ['帮我查看浦东新区中医医院的监管画像。','帮我查看浦东新区人民医院的监管画像。']);
  const targetScene:Scene=n===2||n>=16&&n<=32?2:n===11||n>=33?3:1;
  if(targetScene!==c.scene){c.scene=targetScene;}
  if(c.scene!==1&&!c.institution){c.pending=text;return output(welcomes[c.scene-1],[],sceneQuestions[c.scene-1]);}
@@ -146,5 +155,5 @@ export function respond(text:string,previous:Context,forced?:number):Result{
  if(n===38&&c.behavior!=='串换药品')content=`已展开${c.behavior}指标明细，当前检查${check.batch}，可按就医类型和本地/异地继续筛选。`;
  return {node:n,context:c,content,steps:[`识别查询条件：${c.scene===1?'全区':i.name} · ${c.year}年`,catalog[n].steps||`正在读取机构档案、检查结果、风险指标和监管流程……`, '已完成多库关联与口径核验，正在生成结论及可视化结果'],views:includeProfile&&!views[n].includes('profile')?['profile',...views[n]]:views[n],actions:[...(nexts[n]||[]).map(k=>catalog[k].prompt),...(n===0?['查看本月新增高风险机构']:[])],citations:sourceSet.map(j=>`${['医疗机构档案库','检查结果库','风险指标库','监管流程库'][j]} · ${j===2?PARAM_VERSION:SNAPSHOT}`)};
 }
-export function switchScene(scene:Scene,previous:Context):Result{const c={...previous,scene};return {node:-1,context:c,content:welcomes[scene-1],steps:[],views:[],actions:sceneQuestions[scene-1],citations:[]};}
+export function switchScene(scene:Scene,previous:Context):Result{const c:Context={...previous,scene,...(scene===3?{year:'',batch:undefined,recordIds:undefined}: {})};return {node:-1,context:c,content:welcomes[scene-1],steps:[],views:scene===2?['portrait']:[],actions:scene===2?[]:sceneQuestions[scene-1],citations:[]};}
 export function titleOf(c:Context){return SCENES[c.scene-1];}

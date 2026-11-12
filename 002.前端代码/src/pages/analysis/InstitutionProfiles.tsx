@@ -2,7 +2,7 @@ import ProfilePageHeader from './ProfilePageHeader';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AutoComplete, Button, Empty, Pagination, Select, Tooltip } from 'antd';
-import { BankOutlined, ArrowUpOutlined, SearchOutlined } from '@ant-design/icons';
+import { BankOutlined, ArrowUpOutlined, BarChartOutlined, SearchOutlined } from '@ant-design/icons';
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip as ChartTooltip, XAxis, YAxis } from 'recharts';
 import './profiles.css';
 
@@ -16,7 +16,7 @@ export default function InstitutionProfiles(){
  const filtered=rows.filter(row=>row.name.includes(query.name.trim())&&row.code.toLowerCase().includes(query.code.trim().toLowerCase())&&(!query.risk||row.risk===query.risk)&&(!query.level||String(row.level)===query.level));
  const update=(key:keyof typeof initial,value:string)=>setDraft(prev=>({...prev,[key]:value}));
  return <div className="profiles-page">
-  <ProfilePageHeader parents={[{title:'医保数据分析',to:'/app/modules/analysis'}]} title="医疗机构监管履历画像" meta={<span className="profile-update"><i/>数据更新至 2026年11月</span>}/>
+  <ProfilePageHeader parents={[{title:'医保数据分析',to:'/app/modules/analysis'}]} title="医疗机构监管履历画像" meta={<Button type="primary" icon={<BarChartOutlined/>} href="/app/home/dashboard">数据大屏</Button>}/>
   <div className="profiles-body">
    <section className="profile-section profile-overview"><SectionTitle number="01" title="浦东新区医疗机构监管履历总体情况"/>
     <div className="profile-summary">{risks.map(r=><article className="profile-risk-card" key={r.name} style={{'--risk-color':r.color} as React.CSSProperties}><h3><i/>{r.name}机构</h3><div className="profile-risk-value">{r.value}<small>家</small></div><p>较上月 <strong>{r.change}</strong><span className="profile-risk-share">占比 {r.percent}%</span></p><div className="profile-risk-meter"><i style={{width:`${r.percent}%`,background:r.color}}/></div></article>)}
