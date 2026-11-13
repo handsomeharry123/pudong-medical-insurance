@@ -4,10 +4,18 @@ export const PARAM_VERSION = 'PD-RISK-2026-V1';
 export const BEHAVIORS = ['串换药品','不必要医药服务','过度诊疗','超范围支付','重复收费','超量开药','过度检查','分解处方'];
 export const VISITS = ['门诊','住院','大病','急观','家床','内设门急诊','急诊','进销存'];
 export type Institution = { code:string; name:string; level:string; category:string; score:number; risk:string; previous:string; rising:boolean };
+// Fictional Pudong-style institution names for the simulated risk dataset.
+const demoAreas=['陆家嘴','潍坊','洋泾','花木','塘桥','南码头','周家渡','上钢','金杨','沪东','浦兴','东明','三林','北蔡','张江','金桥','高桥','高行','高东','曹路','唐镇','合庆','川沙','祝桥','惠南','宣桥','新场','航头','周浦','康桥','大团'];
+const demoInstitutionNames=demoAreas.flatMap(area=>[
+ `上海浦东${area}和康医院`,
+ `上海浦东${area}仁泽综合门诊部`,
+ `上海浦东${area}康宁中医门诊部`,
+ `上海浦东${area}惠民社区卫生服务站`,
+]);
 export const institutions: Institution[] = Array.from({length:124},(_,i)=>{
   const high=i<12, medium=i>=12&&i<40;
-  const level= i<8?'1级':i===8?'2级':i<12?'3级':i<74?'1级':i<111?'2级':'3级';
-  return {code:`PDYB-310115-${String(i===12?1:i<12?i+2:i+2).padStart(3,'0')}`,name:i===12?'浦东新区中医医院':i===13?'浦东新区人民医院':`浦东医保示例医疗机构${String(i+1).padStart(3,'0')}`, level,category:i===12||i===13?'综合医院':['综合医院','专科医院','社区卫生服务中心'][i%3],score:high?+(65+(11-i)*1.4).toFixed(2):medium?+(58.00-(i-12)*1.1).toFixed(2):+(19-(i-40)*.17).toFixed(2),risk:high?'高风险':medium?'中风险':'低风险',previous:i<2?'中风险':i>=12&&i<15?'低风险':i>=40&&i<44?'中风险':high?'高风险':medium?'中风险':'低风险',rising:i<2||(i>=12&&i<15)};
+  const level= `${i%3+1}级`;
+  return {code:`PDYB-310115-${String(i===12?1:i<12?i+2:i+2).padStart(3,'0')}`,name:demoInstitutionNames[(i*37+19)%demoInstitutionNames.length], level,category:i===12||i===13?'综合医院':['综合医院','专科医院','社区卫生服务中心'][i%3],score:high?+(65+(11-i)*1.4).toFixed(2):medium?+(58.00-(i-12)*1.1).toFixed(2):+(19-(i-40)*.17).toFixed(2),risk:high?'高风险':medium?'中风险':'低风险',previous:i<2?'中风险':i>=12&&i<15?'低风险':i>=40&&i<44?'中风险':high?'高风险':medium?'中风险':'低风险',rising:i<2||(i>=12&&i<15)};
 });
 export const DEFAULT_INST = institutions[12];
 export type Check = {batch:string;code:string;name:string;type:string;date:string;start:string;end:string;stage:string;entered:string;days:number;limit:number;department:string;fee:number;score:number;priority:string;overdue:boolean;duration?:number};
@@ -16,14 +24,15 @@ const stages=['网审分工','检查实施','调查取证','形成结果'];
 export const STAGES=stages;
 const batchNames=['FXJC-2026-011','ZXJC-2026-006','RCJC-2026-005','FXJC-2025-009','ZXJC-2025-004','RCJC-2024-003','FXJC-2023-002','RCJC-2022-001'];
 export const checks:Check[] = institutions.flatMap((inst,i)=>{
-  const count=i===12?8:i===13?3:i<2?2:1;
+  // 固定分散首页有效检查与在办检查，刷新时保持演示数据稳定。
+  const count=i===12?8:i===13?3:i<10?2:1;
   return Array.from({length:count},(_,j)=>{
-    const isDefault=i===12,open=isDefault?j<2:i<7||i>=13&&i<=38&&j===0;
-    const stage=isDefault?(j===0?'网审分工':j===1?'调查取证':'形成结果'):open?stages[i%3]:'形成结果';
+    const isDefault=i===12,open=isDefault?j<2:(i<7||i===8)||i>=13&&i<=38&&j===0;
+    const stage=isDefault?(j===0?'网审分工':j===1?'调查取证':'形成结果'):open?(j>0&&![1,4,8].includes(i)?'形成结果':stages[i%3]):'形成结果';
     const days=isDefault?(j===0?4:j===1?7:0):open?(i<2&&j===1?6:i===0?22:i===1?18:i>=18&&i%4===0?4:2+i%8):0;
     const limit=i<2?14:10;
     const batch=isDefault?batchNames[j]:`${j?'ZXJC':'FXJC'}-2026-${String(100+i*2+j).padStart(3,'0')}`;
-    return {batch,code:inst.code,name:inst.name,type:isDefault?['飞行检查','专项检查','日常检查','飞行检查','专项检查','日常检查','飞行检查','日常检查'][j]:i===13?['专项检查','飞行检查','日常检查'][j]:j?'专项检查':i%3===0?'飞行检查':i%3===1?'专项检查':'日常检查',date:isDefault?['2026-10-28','2026-08-18','2026-05-12','2025-10-20','2025-04-15','2024-06-12','2023-08-16','2022-05-19'][j]:i===13?['2026-10-20','2026-09-20','2026-06-20'][j]:i>=18&&i%4===0?'2026-11-03':'2026-10-20',start:isDefault&&j>2?`${2028-j}-01-01`:'2026-01-01',end:isDefault&&j>2?`${2028-j}-09-30`:'2026-09-30',stage,entered:isDefault?j===0?'2026-11-05':'2026-11-02':i>=18&&i%4===0?'2026-11-05':`2026-10-${String(31-days).padStart(2,'0')}`,days,limit,department:'浦东新区医保局',duration:open?days:3+(i+j)%12,fee:isDefault?[360000,220000,180000,140000,100000,80000,70000,50000][j]:Math.round(inst.score*3000),score:isDefault?[78,68,54,50,46,42,37,30][j]:inst.score,priority:i<2?'高优先级':i<5?'中优先级':'一般关注',overdue:days>limit};
+    return {batch,code:inst.code,name:inst.name,type:isDefault?['飞行检查','专项检查','日常检查','飞行检查','专项检查','日常检查','飞行检查','日常检查'][j]:i===13?['专项检查','飞行检查','日常检查'][j]:j?'专项检查':i%3===0?'飞行检查':i%3===1?'专项检查':'日常检查',date:isDefault?['2026-10-28','2026-08-18','2026-05-12','2025-10-20','2025-04-15','2024-06-12','2023-08-16','2022-05-19'][j]:i===13?['2026-10-20','2026-09-20','2026-06-20'][j]:i>=18&&i%4===0?'2026-11-03':'2026-10-20',start:isDefault&&j>2?`${2028-j}-01-01`:'2026-01-01',end:isDefault&&j>2?`${2028-j}-09-30`:'2026-09-30',stage,entered:isDefault?j===0?'2026-11-05':'2026-11-02':i>=18&&i%4===0?'2026-11-05':`2026-10-${String(31-days).padStart(2,'0')}`,days,limit,department:'浦东新区医保局',duration:open?days:3+(i+j)%12,fee:isDefault?[360000,220000,180000,140000,100000,80000,70000,50000][j]:Math.round(inst.score*3000),score:isDefault?[78,68,54,50,46,42,37,30][j]:+(Math.min(100,Math.max(0,inst.score+(i%2===0?1:-1)*(3.25+(i%7)*.61+j*1.4)))).toFixed(2),priority:i<2?'高优先级':i<5?'中优先级':'一般关注',overdue:days>limit};
   });
 });
 // Five monthly new overdue cases; two earlier overdue batches remain open.

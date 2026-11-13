@@ -2,10 +2,16 @@ import { history, institutions } from '../home/regulator/data';
 
 export const PROFILE_PATH = '/app/modules/analysis/institution-profiles';
 // Share institution identity and check records with the dashboard.
-export const profileInstitutions=institutions.map(({name,code,risk,level})=>({name,code,risk,level:Number(level.replace('级',''))}));
-export type ProfileCheck={batch:string;type:string;start:string;end:string;fee:number;score:number;risk:string;stage:string};
+export const profileInstitutions=institutions.map(({name,code,risk,level,score})=>({
+ name,code,risk,nature:code.endsWith('2')?'公立':'私立',address:`上海市浦东新区${name.match(/浦东(.+?)(和康|仁泽|康宁|惠民)/)?.[1]||'张江'}（模拟地址）`,level:Number(level.replace('级','')),score,
+ latestScore:history(code)[0]?.score??0,
+})).sort((a,b)=>b.score-a.score||b.latestScore-a.latestScore||a.code.localeCompare(b.code))
+ .map((row,index)=>({...row,rank:index+1}));
+export const profileStages=['数据筛查','网审分工','实施网审','任务派发','检查实施','调查取证','形成结果','结果告知','机构反馈','提出处理意见'];
+export const hasProfileResult=(c:{stage:string})=>profileStages.indexOf(c.stage)>=6;
+export type ProfileCheck={batch:string;type:string;start:string;end:string;fee:number;score:number;risk:string;stage:string;date:string;updated:string;created:string};
 export function getProfileChecks(code:string):ProfileCheck[]{
- return history(code).map(c=>({batch:c.batch,type:c.type,start:c.start,end:c.end,fee:c.fee,score:c.score,risk:c.score>=60?'高风险':c.score>=20?'中风险':'低风险',stage:c.stage==='形成结果'?'已办结':c.stage}));
+ return history(code).map(c=>({batch:c.batch,type:c.type,start:c.start,end:c.end,fee:c.fee,score:c.score,risk:c.score>=60?'高风险':c.score>=20?'中风险':'低风险',stage:c.stage,date:c.date,updated:c.entered,created:c.date}));
 }
 export const feeBehaviors=[
  {name:'重复收费',amount:292702.25,color:'#0156ff',cells:[240066.50,52635.75,0,0,0,0,0,0]},

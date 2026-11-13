@@ -5,6 +5,7 @@ import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../hooks/useTheme';
 import './platform.css';
+import ProfileAssistant from '../pages/analysis/ProfileAssistant';
 import PlatformNavigation, { NavigationContext } from './PlatformNavigation';
 
 export default function BasicLayout() {
@@ -39,5 +40,6 @@ export default function BasicLayout() {
       </div>
     </header>
     <div className="platform-body">{!dashboard && <PlatformNavigation />}<main ref={contentRef} className="platform-content"><Outlet /></main></div>
+    {location.pathname.startsWith('/app/modules/analysis/institution-profiles')&&<ProfileAssistant pathname={location.pathname}/>}
   </div></NavigationContext.Provider>;
 }

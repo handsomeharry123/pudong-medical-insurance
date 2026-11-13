@@ -73,3 +73,116 @@
  .institution-profile-detail .institution-advice-grid{grid-auto-rows:auto}
  .institution-profile-detail .institution-section-title{align-items:flex-start}
 }
+
+.institution-detail-layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:20px;align-items:start}.institution-business-card{background:#fff;border:1px solid #e0e8f4;border-radius:12px;overflow:hidden}.institution-default-cover{aspect-ratio:16/9;display:grid;place-items:center;background:linear-gradient(135deg,#eaf3ff,#f5f9ff);color:#7da4d9}.institution-default-cover span{font-size:56px}.institution-business-card h2{font-size:17px;line-height:1.7;margin:20px}.institution-business-card dl{margin:20px;font-size:13px}.institution-business-card dt{color:#8a9ab0;margin-top:18px}.institution-business-card dd{margin:6px 0;color:#354b69;overflow-wrap:anywhere;line-height:1.8}.institution-right-panel{min-width:0;background:#fff;border:1px solid #e0e8f4;border-radius:12px;padding:0 20px 20px}.institution-profile-detail .institution-analysis-grid{grid-template-columns:minmax(0,1fr)}.institution-profile-detail .institution-analysis-grid>*{display:none!important}.institution-profile-detail .institution-analysis-grid.active-fees>:nth-child(1),.institution-profile-detail .institution-analysis-grid.active-matrix>:nth-child(2),.institution-profile-detail .institution-analysis-grid.active-trend>:nth-child(3),.institution-profile-detail .institution-analysis-grid.active-advice>:nth-child(4){display:block!important}.institution-right-panel .institution-section{border:0;padding:12px 0;box-shadow:none}.institution-profile-detail .institution-check-filters{display:flex;flex-wrap:wrap}.institution-check-filters label{flex:1 1 180px;min-width:160px}.institution-profile-detail .institution-check-filters .profile-filter-actions{flex:0 0 auto}.institution-advice-item{border:1px solid #e5edf8;background:#fafcff;padding:16px;border-radius:10px;margin-top:16px;line-height:1.8}.institution-advice-item h3{font-size:15px}.institution-right-panel .ant-table-cell{font-size:12px}.institution-right-panel .ant-tabs-nav{margin-bottom:12px}
+
+.institution-detail-layout{align-items:stretch}.institution-business-card{align-self:stretch;display:flex;flex-direction:column}.institution-default-cover{display:block;overflow:hidden;aspect-ratio:16/9;flex-shrink:0}.institution-default-cover img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}.institution-risk-value .institution-risk-label{font-size:32px;white-space:nowrap}
+.institution-right-panel{container-type:inline-size}
+.institution-profile-detail .institution-check-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 12px;padding:12px;margin-bottom:14px}
+.institution-profile-detail .institution-check-filters label{min-width:0;gap:5px;grid-column:auto;grid-row:auto}
+.institution-profile-detail .institution-check-filters .profile-filter-actions{grid-column:3/5;grid-row:auto;justify-content:flex-end;align-self:end}
+@container(min-width:1200px){.institution-profile-detail .institution-check-filters{grid-template-columns:1.2fr repeat(5,minmax(0,1fr)) auto}.institution-profile-detail .institution-check-filters .profile-filter-actions{grid-column:auto}}
+.institution-advice-content{font-size:13px;line-height:1.7;color:#52647e}.institution-advice-summary{background:#f4f8ff;border:1px solid #e4ecf9;border-radius:10px;padding:14px 18px;margin-bottom:16px}.institution-advice-summary h3{font-size:14px;margin:0 0 8px}.institution-advice-summary ul{margin:0;padding-left:18px;display:grid;gap:4px}.institution-advice-list{display:grid;gap:12px}.institution-advice-row{border:1px solid #e5ebf3;border-radius:10px;padding:16px 18px;background:#fff;min-width:0}.institution-advice-row header{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.institution-advice-row h3{font-size:14px;margin:0;color:#293d58}.institution-priority{font-size:11px;border-radius:4px;padding:2px 7px}.priority-high{background:#fff1f0;color:#ce4949}.priority-medium{background:#fff7e7;color:#ae791b}.institution-advice-row dl{display:grid;grid-template-columns:64px minmax(0,1fr);gap:8px 14px;margin:14px 0}.institution-advice-row dt{color:#8a99ad}.institution-advice-row dd{margin:0;overflow-wrap:anywhere}.institution-advice-links{display:flex;flex-wrap:wrap;gap:6px 16px}.institution-advice-row footer{display:flex;flex-wrap:wrap;gap:8px;padding-left:78px}.institution-advice-disclaimer{font-size:11px;color:#98a6ba;margin:14px 0 0}
+.institution-primary-tabs>.ant-tabs-nav .ant-tabs-tab{font-size:14px;font-weight:600;padding:15px 4px}.institution-right-panel .institution-secondary-tabs>.ant-tabs-nav{background:#f4f6fa;border-radius:9px;padding:4px;margin:0 0 14px}.institution-secondary-tabs>.ant-tabs-nav:before,.institution-secondary-tabs .ant-tabs-ink-bar{display:none}.institution-secondary-tabs>.ant-tabs-nav .ant-tabs-tab{padding:7px 14px;margin:0!important;border-radius:6px;font-size:13px}.institution-secondary-tabs>.ant-tabs-nav .ant-tabs-tab-active{background:white;box-shadow:0 1px 4px #243e6012}.institution-primary-tabs>.ant-tabs-content-holder,.institution-secondary-tabs>.ant-tabs-content-holder{display:none}
+@media(max-width:1000px){.institution-detail-layout{grid-template-columns:minmax(0,1fr)}.institution-default-cover{max-height:200px;aspect-ratio:16/9}.institution-business-card{height:auto}}
+
+/* Keep the complete fee breakdown together within the desktop overview. */
+@media(min-width:1001px){
+ .institution-profile-detail .institution-metrics article{min-height:90px;padding:12px 22px}
+ .institution-profile-detail .institution-metrics h3{margin-bottom:4px}
+ .institution-profile-detail .institution-metrics p strong{font-size:34px}
+ .institution-profile-detail .institution-detail-layout{gap:16px}
+ .institution-profile-detail .institution-default-cover{aspect-ratio:2.6/1}
+ .institution-profile-detail .institution-business-card h2{margin:14px 20px;font-size:16px;line-height:1.5}
+ .institution-profile-detail .institution-business-card dl{margin:0 20px 18px}
+ .institution-profile-detail .institution-business-card dt{margin-top:12px}
+ .institution-profile-detail .institution-business-card dd{margin-top:3px}
+ .institution-profile-detail .institution-right-panel{padding-bottom:12px}
+ .institution-profile-detail .institution-primary-tabs>.ant-tabs-nav .ant-tabs-tab{padding-block:10px}
+ .institution-profile-detail .institution-secondary-tabs>.ant-tabs-nav{margin-bottom:6px}
+ .institution-profile-detail .institution-section-title{margin-bottom:6px}
+ .institution-profile-detail .institution-fee-total{margin-bottom:4px}
+ .institution-profile-detail .institution-fee-layout{flex:0;min-height:0;padding-block:6px;grid-template-columns:minmax(220px,.85fr) minmax(0,1.5fr);gap:24px}
+ .institution-profile-detail .institution-donut{width:100%;max-width:300px;margin:auto}
+ .institution-profile-detail .institution-fee-legend{gap:5px}
+ .institution-profile-detail .institution-fee-legend li{padding:7px 10px;min-height:30px;box-sizing:border-box}
+}
+@media(min-width:1001px) and (max-height:800px){
+ .institution-profile-detail .institution-fee-legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ .institution-profile-detail .institution-fee-legend li{flex-direction:column;align-items:flex-start;gap:2px;padding:6px 8px}
+ .institution-profile-detail .institution-fee-layout{grid-template-columns:minmax(200px,.7fr) minmax(0,1.5fr);gap:14px}
+}
+
+.institution-profile-detail .compact-record-filters{display:grid;grid-template-columns:minmax(110px,1fr) minmax(150px,1fr) auto;gap:10px;padding:10px}
+.institution-profile-detail .compact-record-filters .record-filter-field{min-width:0;display:block;grid-column:auto;grid-row:auto}
+.institution-profile-detail .compact-record-filters .record-filter-field:nth-child(n+3){display:none}
+.institution-profile-detail .compact-record-filters .profile-filter-actions{grid-column:3;grid-row:1;gap:6px;white-space:nowrap;display:flex}
+.institution-profile-detail .compact-record-filters.is-expanded .record-filter-field:nth-child(n+3){display:block}
+.institution-profile-detail .compact-record-filters.is-expanded .record-filter-field:nth-child(3){grid-column:1;grid-row:2}
+.institution-profile-detail .compact-record-filters.is-expanded .record-filter-field:nth-child(4){grid-column:2;grid-row:2}
+.institution-profile-detail .compact-record-filters.is-expanded .record-filter-field:nth-child(5){grid-column:1;grid-row:3}
+.institution-profile-detail .compact-record-filters.is-expanded .record-filter-field:nth-child(6){grid-column:2;grid-row:3}
+@container(min-width:1000px){.institution-profile-detail .compact-record-filters.is-expanded{grid-template-columns:repeat(4,minmax(140px,1fr)) auto}.institution-profile-detail .compact-record-filters.is-expanded .profile-filter-actions{grid-column:5}.institution-profile-detail .compact-record-filters.is-expanded .record-filter-field:nth-child(3){grid-column:3;grid-row:1}.institution-profile-detail .compact-record-filters.is-expanded .record-filter-field:nth-child(4){grid-column:4;grid-row:1}.institution-profile-detail .compact-record-filters.is-expanded .record-filter-field:nth-child(5){grid-row:2}.institution-profile-detail .compact-record-filters.is-expanded .record-filter-field:nth-child(6){grid-row:2}}
+
+/* All overview tabs share one viewport-sized frame and a stable bottom edge. */
+@media(min-width:1001px){
+ .institution-profile-detail .institution-detail-layout{height:var(--overview-height,600px);min-height:0}
+ .institution-profile-detail .institution-business-card{min-height:0;overflow:auto}
+ .institution-profile-detail .institution-right-panel{height:100%;min-height:0;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden}
+ .institution-profile-detail .institution-primary-tabs,
+ .institution-profile-detail .institution-secondary-tabs{flex:none}
+ .institution-profile-detail .institution-analysis-grid{flex:1;min-height:0;overflow:auto;align-content:stretch;scrollbar-gutter:stable}
+ .institution-profile-detail .institution-right-panel>#checks{flex:1;min-height:0;overflow:auto;scrollbar-gutter:stable}
+ .institution-profile-detail .institution-analysis-grid>.institution-scroll-target>.institution-section{min-height:100%;height:auto}
+ .institution-profile-detail .institution-analysis-grid>.institution-section{min-height:100%}
+}
+
+/* Fill the shared frame without forcing charts beyond its available height. */
+@media(min-width:1001px){
+ .institution-profile-detail .institution-analysis-grid{grid-template-rows:minmax(0,1fr)}
+ .institution-profile-detail .institution-analysis-grid.active-fees>div:first-child{height:100%;min-height:0}
+ .institution-profile-detail .institution-analysis-grid.active-fees>div:first-child>.institution-section{height:100%;min-height:0}
+ .institution-profile-detail .institution-fee-layout{flex:1;min-height:0;align-items:stretch}
+ .institution-profile-detail .institution-donut{height:100%;min-height:180px;max-width:360px;align-self:center}
+ .institution-profile-detail .institution-fee-legend{justify-content:space-between;min-height:0}
+ .institution-profile-detail .institution-fee-legend li{flex:1}
+ .institution-profile-detail .institution-business-card dl{flex:1;display:grid;grid-template-rows:repeat(4,auto 1fr);align-content:stretch}
+ .institution-profile-detail .institution-business-card dd{align-self:start}
+ .institution-profile-detail .institution-analysis-grid.active-matrix>.institution-section:nth-child(2){display:flex!important;height:100%;min-height:0}
+ .institution-profile-detail .institution-matrix-wrap{min-height:0;overflow-x:auto;overflow-y:hidden}
+ .institution-profile-detail .institution-matrix{height:100%;min-width:620px}
+ .institution-profile-detail .institution-matrix th,
+ .institution-profile-detail .institution-matrix td{height:auto;padding:4px 6px;line-height:1.35;font-size:10px}
+ .institution-profile-detail .institution-note{flex:none;margin-top:6px;line-height:1.4}
+ .institution-profile-detail .institution-line-chart{min-height:180px;height:0}
+}
+.institution-profile-detail .institution-check-filters{background:#eef3fa;border:1px solid #d5dfed;border-radius:10px;padding:14px;opacity:1}
+.institution-profile-detail .institution-check-filters label{color:#405675;font-weight:500}
+.institution-profile-detail .institution-check-filters .ant-select-selector,
+.institution-profile-detail .institution-check-filters .ant-picker,
+.institution-profile-detail .institution-check-filters .ant-input,
+.institution-profile-detail .institution-check-filters .ant-input-affix-wrapper{background:#fff!important;border-color:#cbd7e6!important;color:#293f5c;box-shadow:none}
+.institution-profile-detail .institution-check-filters input::placeholder{color:#76869c;opacity:1}
+.institution-profile-detail .institution-check-filters .ant-select-selection-placeholder{color:#76869c}
+.institution-profile-detail .institution-check-filters .ant-btn-default{background:#fff;border-color:#cbd7e6;color:#405675}
+@media(max-width:1000px){.institution-profile-detail .institution-donut{height:260px}.institution-profile-detail .institution-line-chart{height:310px}}
+
+/* Only the selected analysis panel may participate in the shared frame. */
+.institution-profile-detail .institution-analysis-grid.active-trend>.institution-section:nth-child(3){display:flex!important;flex-direction:column;min-height:0;height:100%}
+@media(min-width:1001px){
+ .institution-profile-detail .institution-analysis-grid.active-trend .institution-line-chart{flex:1;min-height:220px;height:auto;margin:10px 0 16px}
+ .institution-profile-detail .institution-analysis-grid.active-trend .institution-trend-summary{flex:none}
+ .institution-profile-detail .institution-analysis-grid.active-matrix .institution-matrix th,
+ .institution-profile-detail .institution-analysis-grid.active-matrix .institution-matrix td{font-size:11px;padding:6px 8px}
+}
+
+/* Give the hospital cover more presence; keep metadata compact and readable. */
+@media(min-width:1001px){
+ .institution-profile-detail .institution-business-card .institution-default-cover{aspect-ratio:auto;height:clamp(150px,38%,320px);min-height:150px;flex:0 0 auto}
+ .institution-profile-detail .institution-business-card .institution-default-cover img{object-fit:cover;object-position:center}
+ .institution-profile-detail .institution-business-card h2{flex:none;margin:14px 18px 10px;line-height:1.5}
+ .institution-profile-detail .institution-business-card dl{flex:0 0 auto;display:block;margin:0 18px 18px}
+ .institution-profile-detail .institution-business-card dt{margin-top:12px;line-height:20px;font-size:12px}
+ .institution-profile-detail .institution-business-card dt:first-child{margin-top:4px}
+ .institution-profile-detail .institution-business-card dd{margin:3px 0 0;line-height:1.65;font-size:13px}
+}
