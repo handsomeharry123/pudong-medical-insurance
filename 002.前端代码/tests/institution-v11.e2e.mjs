@@ -8,9 +8,18 @@ try {
  await page.goto(base+'/login');await page.getByPlaceholder('工号 / 手机号 / 姓名').fill('admin');await page.getByPlaceholder('请输入密码',{exact:true}).fill('admin');await page.getByRole('button',{name:'登 录',exact:true}).click();await page.waitForURL('**/app/**');
  for(const code of ['PDYB-310115-002','PDYB-310115-003','PDYB-310115-009']){
  await page.goto(base+'/app/modules/analysis/institution-profiles/'+code);
- await page.getByRole('tab',{name:'违规费用结构',exact:true}).waitFor();
- assert.equal(await page.getByRole('tab',{name:'违规费用结构',exact:true}).getAttribute('aria-selected'),'true');
- for(const name of ['行为与就医类型','风险值趋势','监管关注建议'])await page.getByRole('tab',{name,exact:true}).click();
+ await page.getByRole('tab',{name:'违规行为分析',exact:true}).waitFor();
+ assert.equal(await page.getByRole('tab',{name:'违规行为分析',exact:true}).getAttribute('aria-selected'),'true');
+ for(const name of ['行为与就医类型分析','违规项目分析','风险值趋势分析','监管关注建议']){
+ await page.getByRole('tab',{name,exact:true}).click();
+ const visible=await page.locator('.institution-analysis-grid').evaluate(e=>[...e.children].filter(c=>getComputedStyle(c).display!=='none').length);
+ assert.equal(visible,1,`${name} should display only its own panel`);
+ if(name==='违规项目分析'){
+  await page.getByRole('heading',{name:'违规项目分析',exact:true}).waitFor();
+  assert.equal(await page.getByRole('heading',{name:'风险值趋势',exact:true}).isVisible(),false);
+  assert.equal(await page.getByRole('heading',{name:'医小保监管摘要',exact:true}).isVisible(),false);
+ }
+ }
  await page.getByRole('tab',{name:/检查记录/}).click();
  await page.getByRole('button',{name:'查询检查记录'}).click();await page.waitForTimeout(200);
  const visible=page.locator('.ant-table-tbody');assert.ok(await visible.innerText());

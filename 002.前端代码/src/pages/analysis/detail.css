@@ -186,3 +186,44 @@
  .institution-profile-detail .institution-business-card dt:first-child{margin-top:4px}
  .institution-profile-detail .institution-business-card dd{margin:3px 0 0;line-height:1.65;font-size:13px}
 }
+
+.institution-profile-detail .institution-analysis-grid.active-projects>:nth-child(5){display:block!important}.institution-project-tooltip{background:white;border:1px solid #e0e8f4;border-radius:8px;padding:14px;line-height:1.9;box-shadow:0 4px 20px #20385814}.institution-project-detail{padding:16px;background:#f5f8fe;border-radius:8px;line-height:1.8}
+
+.institution-profile-detail .institution-analysis-grid.active-projects>.institution-section:nth-child(5){display:flex!important;flex-direction:column;gap:12px;min-height:0;height:100%;overflow:hidden}.active-projects .institution-section-title{flex:none;margin-bottom:0}.active-projects .institution-note{flex:none;margin:0;line-height:1.7}.institution-project-chart{flex:1;min-height:230px;width:100%;height:320px}.active-projects .institution-section-title .ant-segmented{font-size:12px}.active-projects .institution-project-tooltip{font-size:12px}@media(max-width:1000px){.institution-profile-detail .institution-analysis-grid.active-projects>.institution-section:nth-child(5){height:auto;min-height:400px}.institution-project-chart{flex:auto;height:300px}}
+
+/* 监管建议按业务文档采用连续的纵向阅读布局。 */
+.institution-advice-content{font-size:14px;line-height:1.9;padding:4px 0 12px}
+.institution-advice-summary{padding:18px 20px;margin-bottom:24px}
+.institution-advice-summary h3{font-size:15px;margin-bottom:10px}
+.institution-advice-summary li{padding:2px 0}
+.institution-advice-list{display:flex;flex-direction:column;gap:0}
+.institution-advice-list>.ant-btn{align-self:flex-start}
+.institution-advice-row{border:0;border-radius:0;padding:0 0 22px 22px;background:transparent;position:relative}
+.institution-advice-row+ .institution-advice-row{padding-top:20px;border-top:1px solid #edf1f7}
+.institution-advice-row header:before{content:"";width:6px;height:6px;background:#1677ff;border-radius:50%;position:absolute;left:2px}
+.institution-advice-row h3{font-size:16px;font-weight:600}
+.institution-advice-row p{margin:10px 0 12px;overflow-wrap:anywhere}
+.institution-advice-row footer{padding-left:0;gap:10px}
+.institution-advice-row footer .ant-btn{height:auto;min-height:32px;white-space:normal;text-align:left}
+.institution-advice-disclaimer{border-left:3px solid #c5cdd8;padding-left:12px;font-size:13px;margin-top:0}
+
+/* Unified typography for inspection record filters. */
+.institution-profile-detail .compact-record-filters .ant-select,
+.institution-profile-detail .compact-record-filters .ant-select-selector,
+.institution-profile-detail .compact-record-filters .ant-select-selection-item,
+.institution-profile-detail .compact-record-filters .ant-select-selection-placeholder,
+.institution-profile-detail .compact-record-filters .ant-select-selection-search-input,
+.institution-profile-detail .compact-record-filters .ant-input,
+.institution-profile-detail .compact-record-filters .ant-picker-input > input,
+.institution-profile-detail .compact-record-filters .ant-btn {
+ font-size:14px;
+ font-weight:400;
+ font-family:inherit;
+}
+.institution-profile-detail .compact-record-filters input::placeholder {
+ font-size:14px;
+ font-weight:400;
+}
+
+.institution-advice-summary h3.institution-advice-summary-title{color:#1677ff;font-weight:700}
+.institution-advice-summary p.institution-advice-summary-text{margin:0;line-height:1.8}

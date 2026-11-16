@@ -1,0 +1,14 @@
+/* Shared chart popovers for institution and single-check analysis. */
+.analysis-chart-tooltip{z-index:20;pointer-events:none;font-family:inherit;font-size:12px;line-height:1.7;color:#293d58}
+.analysis-chart-tooltip>div{background:#fff!important;border:1px solid #e0e8f4!important;border-radius:8px!important;padding:12px 14px!important;box-shadow:0 4px 20px #20385814!important;font-family:inherit!important;font-size:12px!important;line-height:1.7!important;color:#293d58!important;max-width:360px;white-space:normal;overflow-wrap:anywhere}
+.analysis-chart-tooltip>div *{font-family:inherit!important;font-size:12px!important;line-height:1.7!important;color:inherit!important}
+.analysis-chart-tooltip .recharts-tooltip-label{margin:0 0 6px!important;font-weight:600}
+.analysis-chart-tooltip .recharts-tooltip-item-list{margin:0;padding:0}
+.analysis-chart-tooltip .recharts-tooltip-item{padding:2px 0!important}
+
+/* Recharts 2 does not forward wrapperClassName; target its actual wrapper. */
+.recharts-tooltip-wrapper:has(.analysis-tooltip-card),.recharts-tooltip-wrapper:has(.institution-project-tooltip),.recharts-tooltip-wrapper:has(.v11-tooltip){font-family:inherit;font-size:12px!important;line-height:1.7!important}
+.analysis-tooltip-card,.recharts-tooltip-wrapper .institution-project-tooltip,.recharts-tooltip-wrapper .v11-tooltip,.recharts-default-tooltip{background:#fff!important;border:1px solid #e0e8f4!important;border-radius:8px!important;padding:14px 16px!important;box-shadow:0 4px 20px #20385814;font-family:inherit!important;font-size:12px!important;line-height:1.7!important;color:#293d58!important;max-width:360px}
+.analysis-tooltip-card{min-width:210px}
+.analysis-tooltip-card strong{display:block;margin-bottom:6px;font-size:12px;font-weight:600}
+.recharts-sector:focus:not(:focus-visible),.recharts-surface:focus:not(:focus-visible){outline:none}
