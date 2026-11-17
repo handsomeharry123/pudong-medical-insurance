@@ -100,7 +100,7 @@ const Login = () => {
 
     if (user) {
       message.success('登录成功');
-      navigate('/app/home/dashboard', { replace: true });
+      navigate('/app/home/overview', { replace: true });
     } else {
       const newErrorCount = errorCount + 1;
       setErrorCount(newErrorCount);
@@ -124,7 +124,7 @@ const Login = () => {
       return;
     }
     message.success('登录成功');
-    navigate('/app/home/dashboard', { replace: true });
+    navigate('/app/home/overview', { replace: true });
   };
 
   const isLocked = lockUntil !== null && Date.now() < lockUntil;

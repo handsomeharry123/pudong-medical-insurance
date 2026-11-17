@@ -15,8 +15,8 @@ const router = createBrowserRouter([
   { path: '/login', element: <Login /> },
   {
     path: '/app', element: <BasicLayout />, children: [
-      { index: true, element: <Navigate to="/app/home/dashboard" replace /> },
-      { path: 'home', element: <Navigate to="/app/home/dashboard" replace /> },
+      { index: true, element: <Navigate to="/app/home/overview" replace /> },
+      { path: 'home', element: <Navigate to="/app/home/overview" replace /> },
       { path: 'modules/analysis', element: <Navigate to="/app/modules/analysis/institution-profiles" replace /> },
       { path: 'modules/analysis/institution-profiles', element: <InstitutionProfiles /> },
       { path: 'modules/analysis/institution-profiles/:code', element: <InstitutionDetail /> },
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
       })),
       { path: 'home/auto-tasks/templates', element: <AutoTaskTemplateList /> },
       { path: 'home/auto-tasks/new', element: <AutoTaskForm /> },
-      { path: '*', element: <Navigate to="/app/home/dashboard" replace /> },
+      { path: '*', element: <Navigate to="/app/home/overview" replace /> },
     ],
   },
   { path: '*', element: <Navigate to="/login" replace /> },

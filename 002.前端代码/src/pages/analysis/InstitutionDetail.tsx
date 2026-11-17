@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { AutoComplete, Button, DatePicker, Empty, Table, Tabs, Typography, Segmented, Select, Tooltip } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { ComposedChart, Bar, CartesianGrid, Cell, LabelList, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip as ChartTooltip, XAxis, YAxis } from 'recharts';
 import { hasProfileResult, profileStages, formatMoney, getProfileChecks, PROFILE_PATH, profileInstitutions, profileVisits } from './profileData';
 import { getCheckItems, checkBehaviors, checkColors } from './checkData';
@@ -66,13 +66,13 @@ export default function InstitutionDetail(){
  const leading=behaviors[0],leadingVisits=profileVisits.map(name=>({name,amount:resultItems.filter(r=>r.behavior===leading?.name&&r.visit===name).reduce((n,r)=>n+r.amount,0)})).sort((a,b)=>b.amount-a.amount);
  const pendingChecks=checks.filter(c=>!hasProfileResult(c));
  const showChecks=(pendingOnly=false)=>{const next={...emptyFilter,stage:pendingOnly?['数据筛查','网审分工','实施网审','任务派发','检查实施','调查取证']:[]};setDraft(next);setFilter(next);setRecordPage(1);setMainTab('checks');setMoreFilters(true);setError('');};
- const summary=valid.length?[`该机构综合风险值为${institution.score.toFixed(2)}分，当前为${institution.risk}。`,...(resultTotal?[`在${valid.map(c=>c.start).sort()[0]}至${valid.map(c=>c.end).sort().at(-1)}内，违规费用主要集中于${topBehaviors.map(r=>r.name).join('、')}，合计涉及${formatMoney(topAmount)}元，占违规费用总额的${(topAmount/resultTotal*100).toFixed(2)}%。`]:['暂无有效违规费用数据。']),`另有${pending}次检查尚未形成结果。`]:['该机构的检查尚未结束，暂无可分析数据。可从检查记录中查看检查进度。'];
+ const summary=valid.length?[`该机构综合风险值为${institution.hasScore?institution.score.toFixed(2):'—'}分，当前为${institution.risk}。`,...(resultTotal?[`在${valid.map(c=>c.start).sort()[0]}至${valid.map(c=>c.end).sort().at(-1)}内，违规费用主要集中于${topBehaviors.map(r=>r.name).join('、')}，合计涉及${formatMoney(topAmount)}元，占违规费用总额的${(topAmount/resultTotal*100).toFixed(2)}%。`]:['暂无有效违规费用数据。']),`另有${pending}次检查尚未形成结果。`]:['该机构的检查尚未结束，暂无可分析数据。可从检查记录中查看检查进度。'];
 
  return <div className="profiles-page institution-detail institution-profile-detail">
   <ProfilePageHeader parents={[{title:'医疗机构监管履历画像',to:PROFILE_PATH}]} title={institution.name}/>
   <div className="profiles-body">
    <div className="institution-metrics">
-    <article className="institution-risk-summary"><div><h3>风险等级</h3><p className={`institution-risk-value risk-text-${institution.risk}`}><strong className="institution-risk-label">{institution.risk}</strong></p></div><div><h3>机构综合风险值</h3><p><strong>{institution.score.toFixed(2)}</strong><span>分</span></p></div></article>
+    <article className="institution-risk-summary"><div><h3>风险等级</h3><p className={`institution-risk-value risk-text-${institution.risk}`}><strong className="institution-risk-label">{institution.risk}</strong></p></div><div><h3>机构综合风险值 <Tooltip placement="top" title={<><div>当前有效且已出分检查记录的平均分。（未出分的记录不参与计算）</div><div style={{marginTop:8,color:'#bfbfbf'}}>单位：分</div></>}><QuestionCircleOutlined className="institution-metric-help" tabIndex={0} aria-label="机构综合风险值计算口径" /></Tooltip></h3><p><strong>{institution.hasScore?institution.score.toFixed(2):'—'}</strong><span>分</span></p></div></article>
     <article className="institution-latest"><h3>最新有效检查风险值</h3><div><p><strong>{latest?latest.score.toFixed(2):'—'}</strong>{latest&&<span>分</span>}</p>{latest?<Link className="institution-outline-link" to={checkPath(latest.batch)}>查看详情</Link>:<span className="institution-no-valid-check">暂无有效检查</span>}</div></article>
    </div>
    <div ref={layoutRef} className="institution-detail-layout"><aside className="institution-business-card"><div className="institution-default-cover"><img src="/images/hospital-default.png" alt="通用医疗机构建筑封面"/></div><h2>{institution.name}</h2><dl><dt>机构代码</dt><dd><Typography.Text copyable>{institution.code}</Typography.Text></dd><dt>机构性质</dt><dd>{institution.nature}</dd><dt>结算等级</dt><dd>{['','一级','二级','三级'][institution.level]}</dd><dt>机构地址</dt><dd>{institution.address}</dd></dl></aside><div className="institution-right-panel"><Tabs className="institution-primary-tabs" activeKey={mainTab} onChange={setMainTab} items={[{key:'analysis',label:'数据分析'},{key:'checks',label:`检查记录（${checks.length}）`}]}/>{mainTab==='analysis'&&<Tabs className="institution-secondary-tabs" activeKey={analysisTab} onChange={setAnalysisTab} items={[{key:'fees',label:'违规行为分析'},{key:'matrix',label:'行为与就医类型分析'},{key:'projects',label:'违规项目分析'},{key:'trend',label:'风险值趋势分析'},{key:'advice',label:'监管关注建议'}]}/>}

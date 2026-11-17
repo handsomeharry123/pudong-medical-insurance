@@ -227,3 +227,6 @@
 
 .institution-advice-summary h3.institution-advice-summary-title{color:#1677ff;font-weight:700}
 .institution-advice-summary p.institution-advice-summary-text{margin:0;line-height:1.8}
+
+.institution-metric-help{margin-left:4px;color:#98a6ba;font-size:14px;cursor:help;vertical-align:middle;}
+.institution-metric-help:hover,.institution-metric-help:focus-visible{color:#1677ff;}
