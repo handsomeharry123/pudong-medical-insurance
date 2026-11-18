@@ -4,6 +4,7 @@ import InstitutionProfiles from './pages/analysis/InstitutionProfiles';
 import InstitutionDetail from './pages/analysis/InstitutionDetail';
 import CheckProfile from './pages/analysis/CheckProfile';
 import BasicLayout from './layouts/BasicLayout';
+import Portal, { PersonalCenter } from './pages/portal/Portal';
 import Login from './pages/portal/Login';
 import HomePage from './pages/home';
 import Dashboard from './pages/home/Dashboard';
@@ -13,6 +14,8 @@ import AutoTaskTemplateList from './pages/home/AutoTaskTemplateList';
 const router = createBrowserRouter([
   { path: '/', element: <Navigate to="/login" replace /> },
   { path: '/login', element: <Login /> },
+  { path: '/portal', element: <BasicLayout />, children: [{ index: true, element: <Portal /> }] },
+  { path: '/profile', element: <BasicLayout />, children: [{ index: true, element: <PersonalCenter /> }] },
   {
     path: '/app', element: <BasicLayout />, children: [
       { index: true, element: <Navigate to="/app/home/overview" replace /> },

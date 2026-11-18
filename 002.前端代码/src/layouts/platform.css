@@ -89,3 +89,22 @@ body[data-app-theme='tech'] .platform-navigation{background:#0f1830;border-color
 .platform-nav-flyout>a:focus-visible{outline:2px solid #0156ff}
 .platform-submenu-popover .ant-popover-inner{border:1px solid #e7edf6;border-radius:10px;box-shadow:0 6px 24px #18365d12;padding:8px}
 @media(max-width:760px){.platform-navigation .platform-nav-group-trigger{justify-content:center;padding:0}.platform-navigation .platform-submenu{display:none}}
+
+
+.platform-app-switcher{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;width:440px;max-width:calc(100vw - 24px);box-sizing:border-box;padding:10px;background:linear-gradient(145deg,#fff,#f8faff);border:1px solid #e2e9f3;border-radius:16px;box-shadow:0 16px 48px #18345b1c,0 3px 10px #18345b08;animation:app-panel-in .2s ease-out;transform-origin:top right}
+.platform-app-entry{display:flex;align-items:center;gap:10px;min-width:0;padding:14px 10px;border:1px solid transparent;border-radius:11px;color:#243854;text-decoration:none;transition:background .2s,border-color .2s,box-shadow .2s,transform .2s}
+.platform-app-entry:hover{background:#fff;border-color:#dae5f6;color:#2469e8;box-shadow:0 4px 12px #2447770b;transform:translateY(-2px)}
+.platform-app-entry:focus-visible{outline:2px solid #3878ed;outline-offset:-2px;background:#f0f5ff}
+.platform-app-entry:active{transform:translateY(0) scale(.98)}
+.platform-app-copy{display:flex;flex-direction:column;gap:5px;min-width:0}
+.platform-app-copy strong{font-size:13px;font-weight:600;line-height:1.5;white-space:nowrap;letter-spacing:0}
+.platform-app-copy small{font-size:11px;line-height:1.5;color:#7b8ba2;white-space:nowrap}
+.platform-app-icon{display:grid;place-items:center;flex-shrink:0;width:40px;height:40px;border-radius:12px;font-size:22px;box-shadow:inset 0 1px 0 #ffffffb3;transition:transform .22s}
+.platform-app-entry:hover .platform-app-icon{transform:scale(1.08) rotate(-4deg)}
+.platform-app-icon.blue{color:#2875ed;background:linear-gradient(145deg,#eef5ff,#dfebff)}
+.platform-app-icon.teal{color:#149b90;background:linear-gradient(145deg,#eafbF6,#d8f1eb)}
+.platform-app-icon.purple{color:#7655dc;background:linear-gradient(145deg,#f4efff,#e8dfff)}
+.platform-app-icon.orange{color:#df8a21;background:linear-gradient(145deg,#fff7e8,#ffedce)}
+@keyframes app-panel-in{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:480px){.platform-app-switcher{grid-template-columns:1fr;width:270px}}
+@media(prefers-reduced-motion:reduce){.platform-app-switcher{animation:none}.platform-app-entry,.platform-app-icon{transition:none}.platform-app-entry:hover,.platform-app-entry:hover .platform-app-icon{transform:none}}

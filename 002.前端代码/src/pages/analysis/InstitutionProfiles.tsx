@@ -7,7 +7,10 @@ import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip as
 import './profiles.css';
 
 import { PROFILE_PATH, profileInstitutions as rows } from './profileData';
-const risks=[{name:'高风险',value:12,change:'↑ 2家',color:'#ff4d4f',percent:9.7},{name:'中风险',value:28,change:'↓ 3家',color:'#f5b400',percent:22.6},{name:'低风险',value:84,change:'↑ 1家',color:'#10b981',percent:67.7}];
+const riskNames=['高风险','中风险','低风险'];
+
+const risks=riskNames.map((name,i)=>{const value=rows.filter(row=>row.risk===name).length;return {name,value,change:value-rows.filter(row=>row.previous===name).length,color:['#ff4d4f','#f5b400','#10b981'][i],percent:rows.length?+(value/rows.length*100).toFixed(1):0};});
+
 type SortKey = '结算等级' | '机构排名' | '机构风险等级';
 type Grain = '月度' | '季度' | '年度';
 // Demonstration monthly snapshots; each snapshot totals 124 institutions.
@@ -19,8 +22,8 @@ const monthlyTrend = Array.from({length:(endYear-2022)*12+endMonth+1},(_,i)=>{
  const medium=Math.round(36+10*Math.sin(i*.29+1.8)-5*Math.cos(i*.63));
  const latest=i===(endYear-2022)*12+endMonth;
  const previous=i===(endYear-2022)*12+endMonth-1;
- const h=latest?12:previous?10:high,m=latest?28:previous?31:medium;
- return {month:`${year}-${String(month).padStart(2,'0')}`,year,quarter:Math.ceil(month/3),高风险:h,中风险:m,低风险:124-h-m};
+ const h=latest?risks[0].value:previous?risks[0].value-risks[0].change:high,m=latest?risks[1].value:previous?risks[1].value-risks[1].change:medium;
+ return {month:`${year}-${String(month).padStart(2,'0')}`,year,quarter:Math.ceil(month/3),高风险:h,中风险:m,低风险:latest?risks[2].value:124-h-m};
 });
 function trendFor(grain:Grain){
  const groups=new Map<string,typeof monthlyTrend[number]>();
@@ -47,8 +50,8 @@ export default function InstitutionProfiles(){
   <ProfilePageHeader parents={[{title:'医保数据分析',to:'/app/modules/analysis'}]} title="医疗机构监管履历画像" meta={<Button type="primary" icon={<BarChartOutlined/>} href="/app/home/dashboard">数据大屏</Button>}/>
   <div className="profiles-body">
    <section className="profile-section profile-overview">
-    <div className="profile-summary">{risks.map(r=><article className="profile-risk-card" key={r.name} style={{'--risk-color':r.color} as React.CSSProperties}><h3><i/>{r.name}机构</h3><div className="profile-risk-value">{r.value}<small>家</small></div><p>较上月 <strong>{r.change}</strong><span className="profile-risk-share">占比 {r.percent}%</span></p><div className="profile-risk-meter"><i style={{width:`${r.percent}%`,background:r.color}}/></div></article>)}
-     <article className="profile-distribution"><div><strong>124</strong><span>家机构纳入监管评级</span><Tooltip title={showTrend?'收起风险趋势':'展开风险趋势'}><Button type="text" icon={<ArrowUpOutlined rotate={45}/>} onClick={()=>setShowTrend(v=>!v)} aria-label={showTrend?'收起风险趋势':'展开风险趋势'} aria-expanded={showTrend}/></Tooltip></div><div className="profile-risk-bar" aria-label="高风险9.7%，中风险22.6%，低风险67.7%">{risks.map(r=><span key={r.name} style={{width:`${r.percent}%`,background:r.color}}/>)}</div><div className="profile-risk-legend">{risks.map(r=><span key={r.name}><i style={{background:r.color}}/>{r.name} {r.percent}%</span>)}</div></article>
+    <div className="institution-profile-summary">{risks.map(r=><article className="profile-risk-card" key={r.name} style={{'--risk-color':r.color} as React.CSSProperties}><h3><i/>{r.name}机构</h3><div className="profile-risk-value">{r.value}<small>家</small></div><p>较上月 <strong>{r.change===0?'持平':`${r.change>0?'↑':'↓'} ${Math.abs(r.change)}家`}</strong><span className="profile-risk-share">占比 {r.percent}%</span></p><div className="profile-risk-meter"><i style={{width:`${r.percent}%`,background:r.color}}/></div></article>)}
+     <article className="profile-distribution"><div><strong>{rows.length}</strong><span>家机构纳入监管评级</span><Tooltip title={showTrend?'收起风险趋势':'展开风险趋势'}><Button type="text" icon={<ArrowUpOutlined rotate={45}/>} onClick={()=>setShowTrend(v=>!v)} aria-label={showTrend?'收起风险趋势':'展开风险趋势'} aria-expanded={showTrend}/></Tooltip></div><div className="profile-risk-bar" aria-label={risks.map(r=>`${r.name}${r.percent}%`).join('，')}>{risks.map(r=><span key={r.name} style={{width:`${r.percent}%`,background:r.color}}/>)}</div><div className="profile-risk-legend">{risks.map(r=><span key={r.name}><i style={{background:r.color}}/>{r.name} {r.percent}%</span>)}</div></article>
     </div>
     {showTrend&&<div className="profile-trend"><div className="profile-trend-heading"><div><h3>机构风险等级趋势</h3></div><div className="profile-trend-controls"><span>2022.01 — {endYear}.{String(endMonth+1).padStart(2,'0')}</span><Segmented aria-label="趋势展示颗粒度" value={grain} options={['月度','季度','年度']} onChange={value=>setGrain(value as Grain)}/></div></div><ResponsiveContainer width="100%" height={320}><LineChart data={trend} margin={{left:0,right:20,top:10,bottom:5}}><CartesianGrid vertical={false} stroke="#edf1f7" strokeDasharray="4 4"/><XAxis dataKey="month" minTickGap={40} axisLine={false} tickLine={false} tick={{fill:"#95a3b8",fontSize:12}} dy={8}/><YAxis domain={[0,124]} ticks={[0,31,62,93,124]} allowDecimals={false} axisLine={false} tickLine={false} tick={{fill:"#95a3b8",fontSize:12}} width={40}/><ChartTooltip contentStyle={{border:"1px solid #e7edf6",borderRadius:10,boxShadow:"0 6px 24px #20385810"}} formatter={(value:number,name:string)=>[`${value}家`,name]} separator="：" cursor={{stroke:"#dce5f2",strokeDasharray:"4 4"}}/><Legend iconType="circle" iconSize={8} wrapperStyle={{paddingTop:22,fontSize:12}}/>{risks.map(r=><Line key={r.name} type="linear" dataKey={r.name} stroke={r.color} strokeWidth={2.5} dot={grain==='年度'?{r:4}:false} isAnimationActive={false} activeDot={{r:5,stroke:"#fff",strokeWidth:2}}/>)}</LineChart></ResponsiveContainer></div>}
    </section>

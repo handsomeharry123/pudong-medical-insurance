@@ -1,9 +1,7 @@
 import { useId, useState } from 'react';
-import boundary from './pudong-boundary.json';
-import { points, project, riskColors, type Org } from './model';
+import { polygons, points, project, riskColors, type Org } from './model';
 
 type Props = { riskFilter: string; zoom: number; selected: Org | null; hovered: Org | null; onSelect: (org: Org) => void; onHover: (org: Org | null) => void; onInteract: () => void };
-const polygons = boundary.features[0].geometry.coordinates as number[][][][];
 const terrain = polygons.map(poly => poly.map(ring => ring.map(project)));
 const radians = -.43;
 function camera(point: number[], height: number, flat: boolean) {

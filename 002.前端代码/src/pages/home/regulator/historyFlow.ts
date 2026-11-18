@@ -10,12 +10,39 @@ export function recordRows(c:Context){
 export function respondHistory(text:string,prev:Context):Result{
  const c:Context={...prev,scene:3,analysis:[...prev.analysis]};
  const result=(content:string,views:View[]=[],actions=next,node=36):Result=>({node,content,views,actions,context:c,steps:['正在识别查询对象、时间及组合条件','正在关联有效检查记录及当前批次数据'],citations:[`检查结果库 · ${SNAPSHOT}`,`评分参数 · ${PARAM_VERSION}`]});
+ if(/清空查询条件/.test(text)){c.historyPending=undefined;c.historyCandidates=undefined;c.institution=undefined;c.batch=undefined;c.recordCodes=undefined;c.year='';c.start=undefined;c.end=undefined;c.stage=undefined;c.risk=undefined;c.checkType=undefined;c.recordLimit=undefined;c.recordSort=undefined;c.unfinished=false;c.overdue=false;return result('已清空查询条件，请输入机构名称、机构代码或检查批次。',[],['查询全区本年度全部监管记录']);}
+ if(/重新输入/.test(text)){c.historyPending=undefined;c.historyCandidates=undefined;return result('请重新输入机构名称、机构代码或检查批次，也可补充时间和风险条件。',[],['清空查询条件']);}
+ if(c.historyPending&&/^选择机构|^选择检查/.test(text)){
+  const choice=institutions.find(i=>text.includes(i.code));const check=checks.find(b=>text.includes(b.batch));
+  if(choice||check){const pending=c.historyPending;c.historyPending=undefined;c.historyCandidates=undefined;return respondHistory(check?`查看${check.batch}批次的监管检查情况`:`${pending} 机构代码${choice!.code}`,c);}
+ }
+ const recommend=()=>{
+  const token=text.match(/PDYB[\w-]*/i)?.[0]||text.replace(/查询|查看|帮我|本年度|全部|最近一次|监管记录|检查情况|机构代码|医疗机构|[。 ，]/g,'');
+  const normalize=(v:string)=>v.replace(/上海市?|浦东新区?|医院|医疗|机构|卫生|服务/g,'');
+  const key=normalize(token);const grams=(v:string)=>Array.from({length:Math.max(0,v.length-1)},(_,i)=>v.slice(i,i+2));
+  const ranked=institutions.map(i=>{const name=normalize(i.name);const overlap=grams(key).filter(g=>name.includes(g)).length;let prefix=0;while(prefix<token.length&&token[prefix]===i.code[prefix])prefix++;return {i,score:/^PDYB/i.test(token)?prefix:overlap+(name.includes(key)&&key?5:0)};}).filter(v=>v.score>0).sort((a,b)=>b.score-a.score).slice(0,6);
+  c.historyCandidates=ranked.map(v=>v.i.code);c.historyPending=text;c.batch=undefined;
+  const incompleteName = ranked.length > 0 && !/(?:FXJC|ZXJC|RCJC|PDYB)-/i.test(text) && institutions.some(i => {
+   const name = normalize(i.name);
+   return key.length >= 2 && name.includes(key);
+  });
+  const response=result(incompleteName
+   ? '找到多条名称相近的检查记录，请选择您要查询的检查。'
+   : ranked.length
+    ? '暂未找到该检查，请检查机构名称或机构代码。以下是可能相关的机构和检查，您也可以重新输入。'
+    : '暂未找到该检查，请检查机构名称或机构代码，您可以重新输入或清空条件后查询。',
+   ranked.length?['historyCandidates']:[],['重新输入','清空查询条件']);
+  response.steps=incompleteName
+   ? ['检测到多个相近检查记录，正在为您整理候选结果。']
+   : ['暂未找到完全匹配的检查，正在检索相近结果。'];
+  return response;
+ };
  const named=institutions.filter(i=>text.includes(i.name)||text.includes(i.code));
  const batch=text.match(/(?:FXJC|ZXJC|RCJC)-\d{4}-\d{3}/i)?.[0]?.toUpperCase();
  const selected=checks.find(b=>b.batch===batch);
- if(batch&&!selected)return result(`未找到检查批次${batch}，请核对编号。`,[],['查询全区全部监管记录']);
+ if(batch&&!selected)return recommend();
  if(selected&&named.length&&!named.some(i=>i.code===selected.code))return result(`机构与批次不匹配，${batch}属于${selected.name}。请核对查询对象。`,[],[]);
- if(!batch&&!named.length&&/医院|机构代码/.test(text)&&!/这家|该机构|某机构|某医疗机构|同类|同类型|比较|相比/.test(text))return result('未匹配到唯一医疗机构，请核对机构全称或机构代码。',[],['查询浦东新区中医医院本年度全部监管记录','查询全区风险最高的5条监管记录']);
+ if(!batch&&!named.length&&/医院|机构代码/.test(text)&&!/这家|该机构|某机构|某医疗机构|同类|同类型|比较|相比/.test(text))return recommend();
  if(!c.institution&&!batch&&!named.length&&!/全区|全部监管机构|高风险|中风险|低风险|20\d{2}|本年度|本季度|本月|阶段|最高|最低/.test(text))return result('请确认希望查询的范围，可按机构查询、全区风险排序，或输入检查批次号。',[],['查询浦东新区中医医院本年度全部监管记录','查询全区风险最高的5条监管记录','查看浦东新区中医医院最近一次检查情况']);
  const query=!batch&&(/记录|履历|最近一次|最新一次|风险最高|风险最低|排名前|只看|筛选/.test(text))&&!/指标|报告|研判|历史问题/.test(text);
  if(query){

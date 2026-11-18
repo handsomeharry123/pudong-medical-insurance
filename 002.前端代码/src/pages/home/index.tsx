@@ -18,7 +18,7 @@ import { SCENES, DEFAULT_INST, history, institutions } from './regulator/data';
 import './regulator/regulator.css';
 
 type ChatMessage={id:string;role:'user'|'assistant';content:string;entry?:'modules'|'analysis'|'portrait';result?:Result};
-type Conversation={id:string;title:string;messages:ChatMessage[];context:Context;updatedAt:string};
+type Conversation={id:string;title:string;titleLocked?:boolean;messages:ChatMessage[];context:Context;updatedAt:string};
 const uid=()=>`${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
 const initialGreeting='您好，我是医小保。\n\n我可以协助您开展医保数据分析、医保经办审核、集采计划执行进度跟踪和长护险监管。您可以从下方选择需要使用的功能，也可以直接告诉我想查询或办理的事项。';
 const analysisGreeting='已进入“医保数据分析”。\n\n这里可以帮助您查询和分析医保监管数据，从全区总体情况逐步查看到具体医疗机构和单次检查。目前已开放“医疗机构监管履历画像”功能。';
@@ -26,7 +26,26 @@ const portraitGreeting='已进入“医疗机构监管履历画像”。\n\n您�
 const modules=[{name:'医保数据分析',description:'查询医保监管数据，分析机构风险、检查结果及变化情况',action:'进入分析'},{name:'医保经办审核',description:'辅助查询经办审核事项、审核进度及异常情况',action:'进入审核'},{name:'集采计划执行进度跟踪',description:'跟踪集采计划、任务执行进度及异常事项',action:'查看进度'},{name:'长护险监管',description:'查询长护险机构、人员、预警线索和核查情况',action:'进入监管'}];
 const welcomeMessage=():ChatMessage=>({id:uid(),role:'assistant',content:initialGreeting,entry:'modules'});
 const STORE='pudong-regulator-conversations-v1';
-function loadSessions():Conversation[]{try{return JSON.parse(sessionStorage.getItem(STORE)||'[]');}catch{return [];}}
+const entryPrompts=new Set([...SCENES,'医保数据分析','进入分析','医疗机构监管履历画像','进入功能','返回首页','返回业务模块']);
+function summarizeConversationTitle(messages:ChatMessage[],fallback:string){
+ const first=messages.find(m=>m.role==='user'&&!entryPrompts.has(m.content.trim()));
+ if(!first)return fallback;
+ const intent=first.content.trim().replace(/^(您好[，,！!。\s]*|你好[，,！!。\s]*|请问[，,\s]*|麻烦[你您]?|请帮我|帮我|我想要?|请)/g,'').replace(/[？?！!。]+$/g,'').replace(/\s+/g,' ').trim();
+ return Array.from(intent||first.content.trim()).slice(0,24).join('')+(Array.from(intent||first.content.trim()).length>24?'…':'');
+}
+function uniqueTitle(base:string,used:Set<string>){
+ let title=base,index=2;
+ while(used.has(title))title=`${base}（${index++}）`;
+ return title;
+}
+function loadSessions():Conversation[]{try{
+ const used=new Set(initialSessions.map(s=>s.title));
+ return (JSON.parse(sessionStorage.getItem(STORE)||'[]') as Conversation[]).map(s=>{
+  const title=uniqueTitle(s.titleLocked?s.title:summarizeConversationTitle(s.messages,s.title),used);
+  used.add(title);
+  return {...s,title,titleLocked:s.titleLocked??s.messages.some(m=>m.role==='user'&&!entryPrompts.has(m.content.trim()))};
+ });
+}catch{return [];}}
 const seededNodes=[0,16,13,1,53,16,12];
 function seedConversation(id:string):Conversation{
  const index=Number(id.slice(1))-1,node=seededNodes[index]??0;
@@ -107,7 +126,10 @@ function RegulatorHome(){
   }
   const prompt=(location.state as {dashboardPrompt?:string}|null)?.dashboardPrompt;if(prompt)setDraft(prompt);const sid=(location.state as {restoreSessionId?:string}|null)?.restoreSessionId;if(sid)restoreSession(sid);const run=(location.state as {restoreRunId?:string}|null)?.restoreRunId;if(run)restoreRun(run);},[location.key]);
  useEffect(()=>()=>{generation.current++;},[]);
- function persist(id:string,all:ChatMessage[],c:Context,title?:string){setConversations(prev=>{const existing=prev.find(s=>s.id===id);const next={id,title:existing?.title||title||titleOf(c),messages:all,context:c,updatedAt:'刚刚'};return [next,...prev.filter(s=>s.id!==id)];});}
+ function persist(id:string,all:ChatMessage[],c:Context,title?:string){setConversations(prev=>{const existing=prev.find(s=>s.id===id);const hasIntent=all.some(m=>m.role==='user'&&!entryPrompts.has(m.content.trim()));
+ const used=new Set([...prev.filter(s=>s.id!==id),...initialSessions.filter(s=>s.id!==id&&!prev.some(c=>c.id===s.id))].map(s=>s.title));
+ const base=summarizeConversationTitle(all,title||existing?.title||titleOf(c));
+ const next={id,title:existing?.titleLocked?existing.title:uniqueTitle(base,used),titleLocked:existing?.titleLocked||hasIntent||!!title&&all.every(m=>m.role!=='user'),messages:all,context:c,updatedAt:'刚刚'};return [next,...prev.filter(s=>s.id!==id)];});}
  function reset(){setRunTitle('');generation.current++;setLoading(false);setPendingResult(null);setActiveId(null);setContext(newContext());setMessages([welcomeMessage()]);setDraft('');setFiles([]);setExpanded(null);setMobileSidebar(false);navigate('/app/home/overview',{replace:true,state:null});setTimeout(()=>inputRef.current?.focus(),50);}
  function restoreSession(id:string){setRunTitle('');generation.current++;setLoading(false);setPendingResult(null);const s=conversations.find(s=>s.id===id)||seedConversation(id);setActiveId(id);setContext(s.context);setMessages(s.messages);setDraft('');setExpanded(null);setMobileSidebar(false);navigate('/app/home/overview',{replace:true,state:null});}
  function restoreRun(id:string){setRunTitle(tasks.flatMap(task=>task.runs).find(run=>run.id===id)?.name||'自动化任务记录');generation.current++;setLoading(false);setPendingResult(null);const lines=runHistoryMocks[id]||[];setMessages(lines.map(m=>({id:m.id,role:m.role,content:m.content})));setContext(newContext());setActiveId(null);setDraft('');navigate('/app/home/overview',{replace:true,state:null});setMobileSidebar(false);}

@@ -5,11 +5,32 @@ import { mockUsers } from '../mock/users';
 interface AuthContextValue {
   currentUser: User | null;
   isAuthenticated: boolean;
+  changePassword: (oldPassword: string, newPassword: string) => Promise<void>;
+  updateProfile: (values: Pick<User, 'name' | 'phone'>) => void;
   login: (username: string, password: string) => Promise<boolean>;
   loginWithPhone: (phone: string) => boolean;
   logout: () => void;
   switchRole: (role: UserRole, userName?: string) => void;
   hasPermission: (module: string, action: string) => boolean;
+}
+
+function savedProfile(user: User): User {
+  try {
+    const data = JSON.parse(localStorage.getItem('pudong-profile-' + user.id) || '{}');
+    return { ...user, name: typeof data.name === 'string' ? data.name : user.name, phone: typeof data.phone === 'string' ? data.phone : user.phone };
+  } catch { return user; }
+}
+
+async function passwordDigest(password: string, salt: string) {
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: new TextEncoder().encode(salt), iterations: 100000, hash: 'SHA-256' }, key, 256);
+  return Array.from(new Uint8Array(bits), byte => byte.toString(16).padStart(2, '0')).join('');
+}
+async function verifyPassword(user: User, password: string) {
+  const stored = localStorage.getItem('pudong-password-' + user.id);
+  if (!stored) return user.password === password;
+  const { salt, digest } = JSON.parse(stored);
+  return await passwordDigest(password, salt) === digest;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -20,8 +41,25 @@ const defaultAdmin =
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
     const id = sessionStorage.getItem('pudong-auth-user');
-    return mockUsers.find(user => user.id === id) ?? null;
+    const user = mockUsers.find(user => user.id === id);
+    return user ? savedProfile(user) : null;
   });
+
+  const updateProfile = (values: Pick<User, 'name' | 'phone'>) => {
+    if (!currentUser) return;
+    localStorage.setItem('pudong-profile-' + currentUser.id, JSON.stringify(values));
+    setCurrentUser({ ...currentUser, ...values });
+  };
+
+  const changePassword = async (oldPassword: string, newPassword: string) => {
+    if (!currentUser) throw new Error('请先登录');
+    if (!await verifyPassword(currentUser, oldPassword)) throw new Error('原密码不正确');
+    if (!/^(?=.*[A-Za-z])(?=.*\d).{8,32}$/.test(newPassword)) throw new Error('新密码需为8–32位，包含字母和数字');
+    if (oldPassword === newPassword) throw new Error('新密码不能与原密码相同');
+    const salt = crypto.randomUUID();
+    const digest = await passwordDigest(newPassword, salt);
+    localStorage.setItem('pudong-password-' + currentUser.id, JSON.stringify({ salt, digest }));
+  };
 
   const isAuthenticated = currentUser !== null;
 
@@ -29,11 +67,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     const user = mockUsers.find(
-      (u) => (u.name === username || u.employeeId === username || u.phone === username) && u.password === password
+      (u) => (u.name === username || u.employeeId === username || u.phone === username) 
     );
 
-    if (user) {
-      setCurrentUser(user);
+    if (user && await verifyPassword(user, password)) {
+      setCurrentUser(savedProfile(user));
       sessionStorage.setItem('pudong-auth-user', user.id);
       return true;
     }
@@ -43,7 +81,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const loginWithPhone = useCallback((phone: string) => {
     const user = mockUsers.find(user => user.phone === phone);
     if (!user) return false;
-    setCurrentUser(user);
+    setCurrentUser(savedProfile(user));
     sessionStorage.setItem('pudong-auth-user', user.id);
     return true;
   }, []);
@@ -113,6 +151,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       value={{
         currentUser,
         isAuthenticated,
+        updateProfile,
+        changePassword,
         login,
         loginWithPhone,
         logout,

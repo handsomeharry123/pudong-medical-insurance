@@ -4,10 +4,10 @@ export const PROFILE_PATH = '/app/modules/analysis/institution-profiles';
 // Share institution identity and check records with the dashboard.
 export const profileStages=['数据筛查','网审分工','实施网审','任务派发','检查实施','调查取证','形成结果','结果告知','机构反馈','提出处理意见'];
 export const hasProfileResult=(c:{stage:string;score?:number})=>profileStages.indexOf(c.stage)>=6&&typeof c.score==='number'&&Number.isFinite(c.score);
-export const profileInstitutions=institutions.map(({name,code,level})=>{
+export const profileInstitutions=institutions.map(({name,code,level,score,risk,previous})=>{
  const valid=history(code).filter(hasProfileResult);
- const score=valid.length?valid.reduce((sum,c)=>sum+c.score,0)/valid.length:0;
- return {name,code,risk:valid.length?(score>=60?'高风险':score>=20?'中风险':'低风险'):'暂无评级',nature:code.endsWith('2')?'公立':'私立',address:`上海市浦东新区${name.match(/浦东(.+?)(和康|仁泽|康宁|惠民)/)?.[1]||'张江'}（模拟地址）`,level:Number(level.replace('级','')),score,hasScore:valid.length>0,latestScore:valid[0]?.score??0};
+ // The mock rating snapshot covers every institution; check progress is independent.
+ return {name,code,risk,previous,nature:code.endsWith('2')?'公立':'私立',address:`上海市浦东新区${name.match(/浦东(.+?)(和康|仁泽|康宁|惠民)/)?.[1]||'张江'}（模拟地址）`,level:Number(level.replace('级','')),score,hasScore:true,latestScore:valid[0]?.score??0};
 }).sort((a,b)=>b.score-a.score||b.latestScore-a.latestScore||a.code.localeCompare(b.code))
  .map((row,index)=>({...row,rank:index+1}));
 export type ProfileCheck={batch:string;type:string;start:string;end:string;fee:number;score:number;risk:string;stage:string;date:string;updated:string;created:string};

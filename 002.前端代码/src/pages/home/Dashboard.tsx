@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Segmented, Switch, Tooltip as Hint } from 'antd';
+import { Button, Segmented, Tooltip as Hint } from 'antd';
 import { ArrowLeftOutlined, CloseOutlined, ExpandOutlined, ShrinkOutlined, ReloadOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
-import { BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { BarChart, Bar, PieChart, Pie, Cell, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { money } from './regulator/data';
 import { snapshot, totals, risks, riskColors, riskStructure, settlement, trends, stages, progress, projectRanking, behaviorTotals, orgs, top10, sortRisk, summary, type Org, type Period } from './dashboard/model';
 import PudongMap3D from './dashboard/PudongMap3D';
@@ -33,30 +33,22 @@ function Ranking({onSelect,onInteract}:{onSelect:(o:Org)=>void;onInteract:()=>vo
 }
 function RiskTrend({period}:{period:Period}){
  const rows=trends[period];
- const label=(value:string)=>period==='月度'?`${value.slice(5)}月`:period==='季度'?value.replace('2026 ','').replace('2025 ','25 '):value;
- return <div className="history-risk-trends" aria-label={`${period}风险机构数量趋势，各行独立刻度，单位家`}>
-  {risks.map((risk,index)=>{
-   const values=rows.map(row=>row[risk]),latest=values[values.length-1],delta=latest-values[values.length-2];
-   const padding=Math.max(1,Math.ceil((Math.max(...values)-Math.min(...values))*.25));
-   const min=Math.max(0,Math.min(...values)-padding),max=Math.max(...values)+padding;
-   return <div className="history-risk-trend-row" key={risk} style={{'--trend-color':riskColors[risk]} as React.CSSProperties}>
-    <div className="history-trend-label"><span><i/>{risk}</span><strong>{latest}<small>家</small></strong><em>{delta>0?'↑':delta<0?'↓':'—'} {delta===0?'持平':`${Math.abs(delta)}家`}</em></div>
-    <div className="history-trend-spark"><ResponsiveContainer width="100%" height="100%"><AreaChart data={rows} margin={{top:7,right:8,bottom:7,left:8}}>
-      <defs><linearGradient id={`risk-trend-fill-${index}`} x1="0" y1="0" x2="0" y2="1"><stop stopColor={riskColors[risk]} stopOpacity={.3}/><stop offset="1" stopColor={riskColors[risk]} stopOpacity={.01}/></linearGradient></defs>
-      <YAxis hide domain={[min,max]}/><XAxis hide dataKey="period"/><CartesianGrid vertical={false} stroke="#4d89a72b" strokeDasharray="3 4"/>
-      <Tooltip contentStyle={chartTip} labelFormatter={value=>String(value)} formatter={(value:number)=>[`${value} 家`,risk]}/>
-      <Area isAnimationActive={!window.matchMedia('(prefers-reduced-motion: reduce)').matches} animationDuration={700} type="monotone" dataKey={risk} stroke={riskColors[risk]} strokeWidth={2.5} fill={`url(#risk-trend-fill-${index})`} dot={{r:2.5,fill:'#12334e',strokeWidth:1.7}} activeDot={{r:4,stroke:'#e5fbff',strokeWidth:1}}/>
-    </AreaChart></ResponsiveContainer></div>
-    <div className="history-trend-scale"><span>{max}</span><span>{min}</span></div>
-   </div>;
-  })}
-  <div className="history-trend-periods" style={{'--trend-period-count':rows.length} as React.CSSProperties}><span/>{rows.map(row=><span key={row.period}>{label(row.period)}</span>)}<span/></div>
-  <div className="history-trend-caption"><span>各行独立刻度 · 单位：家</span><span>↑ ↓ 较上期</span></div>
+ const series=['高风险','中风险','低风险'] as const;
+ return <div className="history-trend-chart" aria-label={`${period}高、中、低风险机构数量趋势，单位家`}>
+ <div className="history-trend-legend">{series.map(risk=><span key={risk}><i style={{background:riskColors[risk]}}/>{risk}</span>)}</div>
+ <div className="history-trend-plot"><ResponsiveContainer width="100%" height="100%"><LineChart data={rows} margin={{top:12,right:14,bottom:2,left:0}}>
+ <CartesianGrid vertical={false} stroke="#4d89a72b"/>
+ <XAxis dataKey="period" axisLine={false} tickLine={false} tick={chartTick} minTickGap={8} tickFormatter={value=>period==='月度'?`${value.slice(5)}月`:value.replace('2025 ','25 ').replace('2026 ','26 ')}/>
+ <YAxis domain={[0,90]} ticks={[0,30,60,90]} width={30} axisLine={false} tickLine={false} tick={chartTick}/>
+ <Tooltip content={({active,payload,label})=>{if(!active||!payload?.length)return null;const index=rows.findIndex(row=>row.period===label);return <div style={chartTip} className="history-trend-tooltip"><strong>{label} · 机构数量</strong>{series.map(risk=>{const count=rows[index][risk],previous=index>0?rows[index-1][risk]:null;const change=previous===null?null:previous===0?null:(count-previous)/previous*100;return <div key={risk} style={{color:riskColors[risk]}}>{risk}：{count} 家 · 环比 {change===null?'—':`${change>0?'+':''}${change.toFixed(1)}%`}</div>;})}</div>;}}/>
+ {series.map(risk=><Line key={risk} dataKey={risk} stroke={riskColors[risk]} strokeWidth={2.5} type="monotone" isAnimationActive={false} dot={{r:2.5,fill:riskColors[risk],stroke:'#102d46',strokeWidth:1.5}} activeDot={{r:5,fill:riskColors[risk],stroke:'#102d46',strokeWidth:2}}/>)}
+ </LineChart></ResponsiveContainer></div>
  </div>;
 }
+
 export default function Dashboard(){
  const navigate=useNavigate();
- const [expanded,setExpanded]=useState(false),[auto,setAuto]=useState(false),[mode,setMode]=useState('地图'),[structure,setStructure]=useState('占比');
+ const [expanded,setExpanded]=useState(false),[mode,setMode]=useState('地图'),[structure,setStructure]=useState('占比');
  const [trend,setTrend]=useState<Period>('月度'),[casePeriod,setCasePeriod]=useState<Period>('年度'),[projectMode,setProjectMode]=useState('总额');
  const [riskFilter,setRiskFilter]=useState(''),[sort,setSort]=useState('风险等级'),[selected,setSelected]=useState<Org|null>(null),[hovered,setHovered]=useState<Org|null>(null),[zoom,setZoom]=useState(1.14);
  const [hovering,setHovering]=useState(false),[otherHover,setOtherHover]=useState(false),[focused,setFocused]=useState(false),[pausedUntil,setPausedUntil]=useState(0),[clock,setClock]=useState(Date.now()),[summaryTime,setSummaryTime]=useState('自动生成');
@@ -64,25 +56,27 @@ export default function Dashboard(){
  const pause=()=>{lastInteraction.current=Date.now();setPausedUntil(Date.now()+8000);};
  const interaction=()=>pause();
  const paused=hovering||otherHover||focused||!!selected||clock<pausedUntil;
- useEffect(()=>{if(!auto)return;const id=setInterval(()=>{const now=Date.now();setClock(now);if(!hovering&&!otherHover&&!focused&&!selected&&now>=pausedUntil&&now-lastInteraction.current>=8000){setMode(v=>v==='地图'?'机构列表':'地图');lastInteraction.current=now;}},500);return()=>clearInterval(id);},[auto,hovering,otherHover,focused,selected,pausedUntil]);
+
  useEffect(()=>{if(!selected)return;const close=(e:PointerEvent)=>{if(!(e.target as Element).closest('.history-org-summary,.history-map-point,.history-org-row,.history-rank-row'))setSelected(null);};document.addEventListener('pointerdown',close);return()=>document.removeEventListener('pointerdown',close);},[selected]);
  useEffect(()=>{const handle=(e:KeyboardEvent)=>{if(e.key==='Escape'){setSelected(null);setExpanded(false);}};document.addEventListener('keydown',handle);return()=>document.removeEventListener('keydown',handle);},[]);
  const choose=(org:Org)=>{setSelected(org);pause();};
  const filter=(risk:string)=>{setRiskFilter(risk);setSelected(null);pause();};
  const visible=[...orgs.filter(o=>!riskFilter||o.risk===riskFilter)].sort(sort==='风险等级'?sortRisk:(a,b)=>b.latest-a.latest);
  const progressData=progress(casePeriod),projectData=projectRanking(projectMode);
- const conclusions=summary({mode,highOnly:riskFilter==='高风险',riskFilter,structure,trend,period:casePeriod,projectMode});
+ const [summaryPage,setSummaryPage]=useState(0);
+ const summaryItems=summary({mode,highOnly:riskFilter==='高风险',riskFilter,structure,trend,period:casePeriod,projectMode});
+ const conclusions=Array.from({length:3},(_,i)=>summaryItems[(summaryPage*3+i)%summaryItems.length]);
  const go=(org:Org,action:'profile'|'checks')=>navigate(`${PROFILE_PATH}/${encodeURIComponent(org.code)}${action==='checks'?'#checks':''}`);
  const resetCore=()=>{setRiskFilter('');setMode('地图');setSelected(null);setSort('风险等级');setZoom(1.14);pause();};
- const regenerate=()=>{setSummaryTime(new Date().toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai',hour12:false}));pause();};
+ const regenerate=()=>{setSummaryPage(page=>page+1);setSummaryTime(new Date().toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai',hour12:false}));pause();};
  return <div className={`history-dashboard ${expanded?'history-expanded':''}`} data-testid="history-dashboard">
- <div className="history-heading"><Button className="history-back" type="text" icon={<ArrowLeftOutlined/>} onClick={()=>navigate(PROFILE_PATH)} data-testid="dashboard-back">返回监管首页</Button><div><div className="history-eyebrow">PUDONG · MEDICAL INSTITUTION SUPERVISION</div><h1>医疗机构监管履历大屏</h1><p>数据覆盖周期：2022-01-01 — {snapshot} <i/> 最新更新：{snapshot} 18:00</p></div><div className="history-heading-actions"><label title={auto?(paused?'交互中暂停':'每8秒切换'):'已关闭'}><Switch size="small" checked={auto} aria-label="自动轮播" onChange={value=>{setAuto(value);lastInteraction.current=Date.now();setClock(Date.now());}}/>自动轮播</label><Button icon={expanded?<ShrinkOutlined/>:<ExpandOutlined/>} onClick={()=>{setExpanded(!expanded);pause();}}>{expanded?'退出大屏':'展开大屏'}</Button></div></div>
+ <div className="history-heading"><Button className="history-back" type="text" icon={<ArrowLeftOutlined/>} onClick={()=>navigate(PROFILE_PATH)} data-testid="dashboard-back">返回监管首页</Button><div><div className="history-eyebrow">PUDONG · MEDICAL INSTITUTION SUPERVISION</div><h1>医疗机构监管履历大屏</h1><p>数据覆盖周期：2022-01-01 — {snapshot} <i/> 最新更新：{snapshot} 18:00</p></div><div className="history-heading-actions"><Button icon={expanded?<ShrinkOutlined/>:<ExpandOutlined/>} onClick={()=>{setExpanded(!expanded);pause();}}>{expanded?'退出大屏':'展开大屏'}</Button></div></div>
  <div className="history-kpis">
- <button onClick={()=>{setMode('机构列表');setRiskFilter('');setSelected(null);pause();}} data-testid="kpi-institutions"><span>监管机构</span><strong>{totals.institutions}<em>家</em></strong><p>已纳入评级 {totals.institutions} 家 · 覆盖率 100%</p></button>
+ <button onClick={()=>{setMode('机构列表');setRiskFilter('');setSelected(null);pause();}} data-testid="kpi-institutions"><span>监管机构</span><strong>{totals.institutions}<em>家</em></strong><p>已评级 {orgs.filter(o=>o.hasScore).length} 家 · 待出分 {orgs.filter(o=>!o.hasScore).length} 家</p></button>
  <button className={riskFilter==='高风险'?'selected':''} aria-pressed={riskFilter==='高风险'} onClick={()=>riskFilter==='高风险'?resetCore():filter('高风险')} data-testid="kpi-high"><span>高风险机构</span><strong>{totals.high}<em>家</em></strong><p><b>较上月 +2 家</b></p></button>
  <div><span>风险等级上升</span><strong>{totals.rising}<em>家</em></strong><p>其中升至高风险 <b>{totals.risingHigh} 家</b></p></div>
- <div><span>累计监管检查</span><strong>{totals.checks}<em>次</em></strong><p>本年新增 {totals.annual} 次<span>未办结 {totals.pending} 次 / {totals.pendingOrgs} 家机构</span></p></div>
- <div><span>违规费用总额</span><strong>{(totals.fee/10000).toFixed(2)}<em>万元</em></strong></div>
+ <div><span>累计监管检查次数</span><strong>{totals.checks}<em>次</em></strong><p>本月监管检查 {totals.monthly} 次</p></div>
+ <div><span>累计违规费用总额</span><strong>{(totals.fee/10000).toFixed(2)}<em>万元</em></strong><p>本月违规费用总额 {(totals.monthlyFee/10000).toFixed(2)} 万元</p></div>
  </div>
  <div className="history-main-grid">
  <div className="history-side-col" onMouseEnter={()=>setOtherHover(true)} onMouseLeave={()=>{setOtherHover(false);pause();}}>
@@ -107,7 +101,7 @@ export default function Dashboard(){
  <Panel title="机构风险排名 TOP10"><Ranking onSelect={choose} onInteract={pause}/></Panel>
  </div></div>
  <div className="history-bottom-grid" onMouseEnter={()=>setOtherHover(true)} onMouseLeave={()=>{setOtherHover(false);pause();}}>
- <Panel title="主要违规行为"><div className="history-behavior-body"><div className="history-behavior-chart"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie isAnimationActive={false} data={behaviorTotals} dataKey="amount" nameKey="name" innerRadius="78%" outerRadius="96%" stroke="#0b2545" strokeWidth={2}>{behaviorTotals.map((b,i)=><Cell key={b.name} fill={['#16d6ed','#299aff','#ffb951','#10d6a8','#7b91ff','#ae80ff','#36a5b5','#536d94'][i]}/>)}</Pie><Tooltip contentStyle={chartTip} formatter={(v:number,name:string,p:any)=>[`${money(v)}元 · ${p.payload.percent}% · ${p.payload.orgCount}家机构 / ${p.payload.checkCount}次检查`,name]}/></PieChart></ResponsiveContainer><div className="history-donut-center"><strong>{(totals.fee/10000).toFixed(2)}</strong><span>万元 · 违规总额</span></div></div><div className="history-behavior-legend">{behaviorTotals.map((b,i)=><div key={b.name} title={`${b.name}：${money(b.amount)}元，占${b.percent}%，${b.orgCount}家机构，${b.checkCount}次检查`}><i style={{background:['#16d6ed','#299aff','#ffb951','#10d6a8','#7b91ff','#ae80ff','#36a5b5','#536d94'][i]}}/><span>{b.name}</span><strong>{b.percent}%</strong></div>)}</div></div></Panel>
+ <Panel title="主要违规行为"><div className="history-behavior-body"><div className="history-behavior-chart"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie isAnimationActive={false} data={behaviorTotals} dataKey="amount" nameKey="name" innerRadius="78%" outerRadius="96%" stroke="#0b2545" strokeWidth={2}>{behaviorTotals.map((b,i)=><Cell key={b.name} fill={b.color}/>)}</Pie><Tooltip contentStyle={chartTip} formatter={(v:number,name:string,p:any)=>[`${money(v)}元 · ${p.payload.percent}% · ${p.payload.orgCount}家机构 / ${p.payload.checkCount}次检查`,name]}/></PieChart></ResponsiveContainer><div className="history-donut-center"><strong>{(totals.fee/10000).toFixed(2)}</strong><span>万元 · 违规总额</span></div></div><div className="history-behavior-legend">{behaviorTotals.map((b,i)=><div key={b.name} title={`${b.name}：${money(b.amount)}元，占${b.percent}%，${b.orgCount}家机构，${b.checkCount}次检查`}><i style={{background:b.color}}/><span>{b.name}</span><strong>{b.percent}%</strong></div>)}</div></div></Panel>
  <Panel title="主要违规项目" extra={<Segmented size="small" options={['总额','次均']} value={projectMode} onChange={v=>{setProjectMode(String(v));pause();}}/>}><div className="history-project-chart"><ResponsiveContainer width="100%" height="100%"><BarChart layout="vertical" data={projectData} margin={{top:3,left:0,right:52,bottom:0}}><XAxis type="number" tick={chartTick} tickLine={false} axisLine={false} tickFormatter={v=>`${(v/10000).toFixed(0)}万`}/><YAxis dataKey="name" type="category" width={152} tick={{...chartTick,fontSize:10}} tickLine={false} axisLine={false} tickFormatter={v=>v.length>14?v.slice(0,14)+'…':v}/><Tooltip contentStyle={chartTip} formatter={(v:number,_n:string,p:any)=>[`${money(v)}元`,`${p.payload.name} · ${p.payload.code}`]}/><Bar isAnimationActive={false} dataKey={projectMode==='总额'?'amount':'average'} name={projectMode==='总额'?'违规金额':'次均违规金额'} fill="#16c8e4" radius={[0,3,3,0]} maxBarSize={14} label={{position:'right',fill:'#a5e8fa',fontSize:11,formatter:(v:number)=>`${(v/10000).toFixed(1)}万`}}/></BarChart></ResponsiveContainer></div></Panel>
  <Panel title="智能总结" className="history-summary-panel" extra={<Button size="small" type="text" icon={<ReloadOutlined/>} title={`上次生成：${summaryTime}`} onClick={regenerate}>重新生成</Button>}><ol>{conclusions.map((text,i)=><li key={i}><span>{String(i+1).padStart(2,'0')}</span><p>{text}</p></li>)}</ol></Panel>
  </div>

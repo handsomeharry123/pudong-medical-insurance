@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Avatar, Dropdown } from 'antd';
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Dropdown, Modal } from 'antd';
+import { AppstoreOutlined, HomeOutlined, LogoutOutlined, UserOutlined, MedicineBoxOutlined, RobotOutlined, TeamOutlined } from '@ant-design/icons';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../hooks/useTheme';
 import './platform.css';
@@ -9,6 +9,7 @@ import ProfileAssistant from '../pages/analysis/ProfileAssistant';
 import PlatformNavigation, { NavigationContext } from './PlatformNavigation';
 
 export default function BasicLayout() {
+  const [switcherOpen, setSwitcherOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const { currentUser, logout } = useAuth();
   const { themeKey } = useTheme();
@@ -26,20 +27,32 @@ export default function BasicLayout() {
   if (!currentUser) return <Navigate to="/login" replace />;
   return <NavigationContext.Provider value={{ collapsed, toggle: () => setCollapsed(value => !value) }}><div className={`platform-shell ${dashboard ? 'platform-shell-dashboard' : ''}`}>
     <header className="platform-header">
-      <NavLink to="/app/home/overview" className="platform-brand">
-        <img src="/logo.svg" alt="" /><span>浦东新区医保数据治理与一体化应用平台</span>
-      </NavLink>
+      <div className="platform-brand">
+        <img src="/logo.svg" alt="" /><span>{location.pathname.startsWith('/app') ? '医保综合智能体平台' : '浦东新区医保数据治理与一体化应用平台'}</span>
+      </div>
       <div className="platform-header-right">
+        <Dropdown open={switcherOpen} onOpenChange={setSwitcherOpen} trigger={['click']} dropdownRender={() => <div className="platform-app-switcher" role="navigation" aria-label="系统切换">
+          {[
+            { name: '平台首页', description: '统一应用入口', icon: <HomeOutlined />, path: '/portal', tone: 'blue' },
+            { name: '医保智慧服务平台', description: '业务办理 · 医疗监管', icon: <MedicineBoxOutlined />, path: '/portal?system=service', tone: 'teal' },
+            { name: '医保综合智能体平台', description: '智能分析 · 辅助审核', icon: <RobotOutlined />, path: '/app/home/overview', tone: 'purple' },
+            { name: '用户管理平台', description: '用户组织 · 权限管理', icon: <TeamOutlined />, path: '/app/modules/users', tone: 'orange' },
+          ].map(app => <NavLink key={app.path} to={app.path} className="platform-app-entry" onClick={() => setSwitcherOpen(false)}>
+            <span className={`platform-app-icon ${app.tone}`}>{app.icon}</span><span className="platform-app-copy"><strong>{app.name}</strong><small>{app.description}</small></span>
+          </NavLink>)}
+        </div>}><button className="platform-account"><AppstoreOutlined /> 应用切换</button></Dropdown>
         <Dropdown trigger={['click']} menu={{ items: [
+          { key: '/profile', label: '个人中心', icon: <UserOutlined /> },
           { key: 'logout', label: '退出登录', icon: <LogoutOutlined />, danger: true },
         ], onClick: ({ key }) => {
-          if (key === 'logout') { logout(); navigate('/login'); }
+          if (key === 'logout') Modal.confirm({ title: '确认退出登录？', content: '退出后需重新登录才能访问平台。', okText: '确认退出', cancelText: '取消', onOk: () => { logout(); navigate('/login', { replace: true }); } });
+          else navigate(key);
         } }}>
-          <button className="platform-account" aria-label="用户菜单"><Avatar size={30} icon={<UserOutlined />} style={{ background: '#eaf2ff', color: '#2469e8' }} /><span>{currentUser.name}</span></button>
+          <button className="platform-account" aria-label="用户菜单"><Avatar size={30} icon={<UserOutlined />} style={{ background: '#eaf2ff', color: '#2469e8' }} /><span>欢迎，{currentUser.name}</span></button>
         </Dropdown>
       </div>
     </header>
-    <div className="platform-body">{!dashboard && <PlatformNavigation />}<main ref={contentRef} className="platform-content"><Outlet /></main></div>
+    <div className="platform-body">{!dashboard && location.pathname.startsWith('/app') && <PlatformNavigation />}<main ref={contentRef} className="platform-content"><Outlet /></main></div>
     {location.pathname.startsWith('/app/modules/analysis/institution-profiles')&&<ProfileAssistant pathname={location.pathname}/>}
   </div></NavigationContext.Provider>;
 }
