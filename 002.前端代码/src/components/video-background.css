@@ -1,0 +1,24 @@
+.video-background{position:absolute;inset:0;z-index:-1;pointer-events:none;background:#dce7f3 url('/media/portal-background-clean.jpg') center/cover no-repeat;overflow:hidden}
+.video-background video{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+.video-background::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#f5f8fc26,#f5f8fc14 60%,#f5f8fc40)}
+.login-video-page{position:relative;isolation:isolate}
+.portal-home{isolation:isolate;background:transparent}
+.portal-home .portal-intro p{color:#43516a}
+.portal-home .portal-footer{color:#43516a}
+/* Match the portal glass surface while keeping form controls legible. */
+.login-video-page>.ant-card{
+  max-width:100%;
+  background:linear-gradient(135deg,rgba(255,255,255,.79),rgba(244,249,255,.65));
+  border:1px solid rgba(255,255,255,.72);
+  -webkit-backdrop-filter:blur(10px) saturate(115%);
+  backdrop-filter:blur(10px) saturate(115%);
+  box-shadow:0 8px 28px rgba(25,51,85,.09),inset 0 1px 0 rgba(255,255,255,.6);
+}
+.login-video-page>.ant-card .ant-typography-secondary{color:#596d87}
+.login-video-page>.ant-card .ant-input-affix-wrapper,
+.login-video-page>.ant-card .ant-input:not(.ant-input-affix-wrapper .ant-input){background:rgba(255,255,255,.86)}
+.login-video-page>.ant-card .ant-input-affix-wrapper>.ant-input{background:transparent}
+.login-video-page>.ant-card .ant-tabs-nav::before{border-bottom-color:rgba(155,174,199,.3)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .login-video-page>.ant-card{background:rgba(255,255,255,.9)}
+}

@@ -1,50 +1,39 @@
+import PortalIcon from '../../components/PortalIcon';
 import { useState } from 'react';
 import { Button, Card, Descriptions, Tag, Modal, Avatar, Form, Input, message } from 'antd';
-import { EditOutlined, UserOutlined, ApartmentOutlined, MedicineBoxOutlined, RobotOutlined, ArrowRightOutlined } from '@ant-design/icons';
+import { HomeOutlined, EditOutlined, UserOutlined, ApartmentOutlined, MedicineBoxOutlined, RobotOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import './portal.css';
 
 const applications = [
-  { title: '医保智慧服务平台', icon: <MedicineBoxOutlined />, color: '#176587', description: '承载现有医保业务系统的统一访问和业务办理', intro: '日常医保业务办理统一入口', tags: ['业务办理', '医疗监管'], features: ['定点医疗机构康复理疗和中医治疗监管系统', '医疗业务后台管理系统', '公务员医疗补助管理系统', '代配药监管系统', '浦东医保业务管理系统', '就业保障平台子模块'] },
-  { title: '医保综合智能体平台', icon: <RobotOutlined />, color: '#4266e9', description: '提供医保数据分析、业务辅助审核和智能监管能力', intro: '医小保智能分析监管入口', tags: ['数据分析', '智能审核', '智能监管'], features: ['医保数据分析智能体', '医保经办智能审核智能体', '长护险监管智能体', '集采计划执行进度跟踪智能体'], available: true },
+  { title: '医保智慧服务平台', icon: <PortalIcon kind="hospital" />, color: '#176587', description: '承载现有医保业务系统的统一访问和业务办理', intro: '日常医保业务办理统一入口', tags: ['业务办理', '医疗监管'], features: ['定点医疗机构康复理疗和中医治疗监管系统', '医疗业务后台管理系统', '公务员医疗补助管理系统', '代配药监管系统', '浦东医保业务管理系统', '就业保障平台子模块'] },
+  { title: '医保综合智能体平台', icon: <PortalIcon kind="robot" />, color: '#4266e9', description: '提供医保数据分析、业务辅助审核和智能监管能力', intro: '医小保智能分析监管入口', tags: ['数据分析', '智能审核', '智能监管'], features: ['医保数据分析智能体', '医保经办智能审核智能体', '长护险监管智能体', '集采计划执行进度跟踪智能体'], available: true },
   { title: '用户管理平台', icon: <ApartmentOutlined />, color: '#448c87', description: '用于管理组织、用户、角色及应用访问权限', intro: '用户、角色、应用及系统配置统一管理入口', tags: ['组织管理', '访问权限'], features: ['用户管理', '角色设置', '权限设置'] },
 ];
 export default function Portal() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
-  const shortcuts: Record<string, string> = {
-    '医保数据分析智能体': '/app/modules/analysis/institution-profiles',
-    '医保经办智能审核智能体': '/app/modules/review',
-    '长护险监管智能体': '/app/modules/care',
-    '集采计划执行进度跟踪智能体': '/app/modules/procurement',
-    '用户管理': '/app/modules/users',
-    '角色设置': '/app/modules/settings?tab=roles',
-    '权限设置': '/app/modules/settings?tab=permissions',
-  };
-  const openFeature = (feature: string) => {
-    const target = shortcuts[feature];
-    if (target) navigate(target);
-    else Modal.info({ title: feature, content: '该业务系统暂未接入，开放后可从此处直接进入。', okText: '知道了', centered: true });
-  };
   const serviceOnly = new URLSearchParams(window.location.search).get('system') === 'service';
-  const apps = serviceOnly ? applications.slice(0, 1) : currentUser?.roles.includes('信息科管理员') ? applications : applications.slice(0, 2);
-  return <div className="portal-page portal-home"><div className="portal-intro"><h1>{serviceOnly ? '医保智慧服务平台' : '平台门户'}</h1></div><div className="portal-grid" style={{ gridTemplateColumns: `repeat(${apps.length}, minmax(0, 1fr))` }}>{apps.map(app => <Card key={app.title} className="portal-card" onPointerMove={event => {
-    if (event.pointerType !== 'mouse' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const card = event.currentTarget;
-    const bounds = card.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width;
-    const y = (event.clientY - bounds.top) / bounds.height;
-    card.style.setProperty('--pointer-x', `${x * 100}%`);
-    card.style.setProperty('--pointer-y', `${y * 100}%`);
-    card.style.setProperty('--tilt-x', `${(0.5 - y) * 3}deg`);
-    card.style.setProperty('--tilt-y', `${(x - 0.5) * 3}deg`);
-  }} onPointerLeave={event => {
-    event.currentTarget.style.setProperty('--tilt-x', '0deg');
-    event.currentTarget.style.setProperty('--tilt-y', '0deg');
-  }} style={{ '--portal-accent': app.color } as import('react').CSSProperties}><span className="portal-pointer-light" aria-hidden="true" /><div className="portal-icon" style={{ color: app.color, background: `${app.color}12` }}>{app.icon}</div><h2>{app.title}</h2><p className="portal-description">{app.description}</p><div>{app.tags.map(tag => <Tag key={tag}>{tag}</Tag>)}</div><div className="portal-features"><strong>{app.intro}</strong><ul>{app.features.map(feature => <li key={feature}><button type="button" className="portal-shortcut" aria-label={feature} onClick={() => openFeature(feature)}><span>{feature}</span><ArrowRightOutlined /></button></li>)}</ul></div><Button block size="large" type={app.available ? 'primary' : 'default'} disabled={!app.available} onClick={() => navigate('/app/home/overview')}>{app.available ? '进入平台' : '进入平台（暂未开放）'} {app.available && <ArrowRightOutlined />}</Button></Card>)}</div></div>;
+  return <div className="portal-page portal-home">
+    <div className="portal-skyline" aria-hidden="true">{Array.from({length:24},(_,i)=><i key={i} style={{height:`${45+(i*47)%140}px`}} />)}</div>
+    <header className="portal-intro"><h1>应用中心</h1><p>请选择需要进入的平台</p></header>
+    <div className="portal-grid">{applications.slice(0,serviceOnly?1:2).map((app,index)=><Card key={app.title} className="portal-card">
+      {!app.available&&<span className="portal-unavailable">暂未开放</span>}
+      <div className="portal-icon" style={{background:index?'#5358d9':'#12649e',color:'#fff'}}>{app.icon}</div>
+      <h2>{index?'医保数据治理与一体化应用平台':app.title}</h2>
+      <p className="portal-description">{app.intro}</p>
+      <Button block size="large" type={app.available?'primary':'default'} disabled={!app.available} onClick={()=>navigate('/app/home/overview')}>进入平台 <ArrowRightOutlined /></Button>
+    </Card>)}</div>
+    {!serviceOnly&&currentUser?.roles.includes('信息科管理员')&&<section className="portal-management">
+      <div className="portal-management-icon"><PortalIcon kind="users" /></div><div className="portal-management-copy"><h2>用户管理平台</h2><p>用户、角色、应用及系统配置统一管理入口</p></div>
+      <span className="portal-management-status">暂未开放</span><Button disabled>进入平台 <ArrowRightOutlined /></Button>
+    </section>}
+    <footer className="portal-footer">© 浦东新区医保综合应用门户</footer>
+  </div>;
 }
 export function PersonalCenter() {
+  const navigate = useNavigate();
   const { currentUser: user, updateProfile, changePassword } = useAuth();
   const [passwordOpen, setPasswordOpen] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
@@ -52,7 +41,7 @@ export function PersonalCenter() {
   const [editing, setEditing] = useState(false);
   const [form] = Form.useForm();
   return <div className="portal-page profile-page"><div className="profile-container">
-    <header className="profile-heading"><h1>个人中心</h1><p>管理个人资料，查看账户信息</p></header>
+    <header className="profile-heading"><div><h1>个人中心</h1><p>管理个人资料，查看账户信息</p></div><Button className="profile-back-portal" icon={<HomeOutlined />} onClick={() => navigate('/portal')}>返回门户</Button></header>
     <Card className="profile-card">
       <div className="profile-summary">
         <Avatar size={64} icon={<UserOutlined />} />

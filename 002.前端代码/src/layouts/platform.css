@@ -108,3 +108,15 @@ body[data-app-theme='tech'] .platform-navigation{background:#0f1830;border-color
 @keyframes app-panel-in{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:480px){.platform-app-switcher{grid-template-columns:1fr;width:270px}}
 @media(prefers-reduced-motion:reduce){.platform-app-switcher{animation:none}.platform-app-entry,.platform-app-icon{transition:none}.platform-app-entry:hover,.platform-app-entry:hover .platform-app-icon{transform:none}}
+
+/* Shared portal pictograms in the application switcher. */
+.platform-app-icon.hospital{background:#12649e;color:#fff}
+.platform-app-icon.robot{background:#5358d9;color:#fff}
+.platform-app-icon.users{background:#0d918b;color:#fff}
+.platform-app-icon>svg{width:26px;height:26px;display:block}
+
+.platform-app-icon.hospital{background:transparent}
+.platform-app-icon.hospital>.portal-hospital-mark{width:100%;height:100%}
+
+.platform-app-switcher .platform-app-icon{border-radius:50%;flex-shrink:0}
+.platform-app-switcher .platform-app-icon.blue{background:#2469e8;color:#fff}

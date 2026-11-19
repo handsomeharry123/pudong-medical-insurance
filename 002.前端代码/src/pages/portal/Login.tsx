@@ -1,3 +1,4 @@
+import VideoBackground from '../../components/VideoBackground';
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Tabs, Form, Input, Button, Card, Typography, Checkbox, message, Space } from 'antd';
@@ -130,16 +131,17 @@ const Login = () => {
   const isLocked = lockUntil !== null && Date.now() < lockUntil;
 
   return (
-    <div
+    <div className="login-video-page"
       style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #001529 0%, #1677FF 100%)',
+        
         padding: '60px 24px',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-start',
       }}
     >
+      <VideoBackground />
       <Card style={{ width: 440, borderRadius: 12 }} styles={{ body: { padding: 40 } }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <Title level={2} style={{ marginBottom: 8 }}>用户登录</Title>
