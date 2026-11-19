@@ -1,7 +1,7 @@
 import PortalIcon from '../../components/PortalIcon';
 import { useState } from 'react';
 import { Button, Card, Descriptions, Tag, Modal, Avatar, Form, Input, message } from 'antd';
-import { HomeOutlined, EditOutlined, UserOutlined, ApartmentOutlined, MedicineBoxOutlined, RobotOutlined, ArrowRightOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, EditOutlined, UserOutlined, ApartmentOutlined, MedicineBoxOutlined, RobotOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import './portal.css';
@@ -17,17 +17,15 @@ export default function Portal() {
   const serviceOnly = new URLSearchParams(window.location.search).get('system') === 'service';
   return <div className="portal-page portal-home">
     <div className="portal-skyline" aria-hidden="true">{Array.from({length:24},(_,i)=><i key={i} style={{height:`${45+(i*47)%140}px`}} />)}</div>
-    <header className="portal-intro"><h1>应用中心</h1><p>请选择需要进入的平台</p></header>
     <div className="portal-grid">{applications.slice(0,serviceOnly?1:2).map((app,index)=><Card key={app.title} className="portal-card">
-      {!app.available&&<span className="portal-unavailable">暂未开放</span>}
       <div className="portal-icon" style={{background:index?'#5358d9':'#12649e',color:'#fff'}}>{app.icon}</div>
-      <h2>{index?'医保数据治理与一体化应用平台':app.title}</h2>
+      <h2>{index?'医保综合智能体平台':app.title}</h2>
       <p className="portal-description">{app.intro}</p>
       <Button block size="large" type={app.available?'primary':'default'} disabled={!app.available} onClick={()=>navigate('/app/home/overview')}>进入平台 <ArrowRightOutlined /></Button>
     </Card>)}</div>
     {!serviceOnly&&currentUser?.roles.includes('信息科管理员')&&<section className="portal-management">
       <div className="portal-management-icon"><PortalIcon kind="users" /></div><div className="portal-management-copy"><h2>用户管理平台</h2><p>用户、角色、应用及系统配置统一管理入口</p></div>
-      <span className="portal-management-status">暂未开放</span><Button disabled>进入平台 <ArrowRightOutlined /></Button>
+      <Button disabled>进入平台 <ArrowRightOutlined /></Button>
     </section>}
     <footer className="portal-footer">© 浦东新区医保综合应用门户</footer>
   </div>;
@@ -41,7 +39,7 @@ export function PersonalCenter() {
   const [editing, setEditing] = useState(false);
   const [form] = Form.useForm();
   return <div className="portal-page profile-page"><div className="profile-container">
-    <header className="profile-heading"><div><h1>个人中心</h1><p>管理个人资料，查看账户信息</p></div><Button className="profile-back-portal" icon={<HomeOutlined />} onClick={() => navigate('/portal')}>返回门户</Button></header>
+    <header className="profile-heading"><div><h1>个人中心</h1><p>管理个人资料，查看账户信息</p></div><Button className="profile-back-portal" icon={<ArrowLeftOutlined />} onClick={() => { if ((window.history.state?.idx ?? 0) > 0) navigate(-1); else navigate('/portal', { replace: true }); }}>返回上一级</Button></header>
     <Card className="profile-card">
       <div className="profile-summary">
         <Avatar size={64} icon={<UserOutlined />} />

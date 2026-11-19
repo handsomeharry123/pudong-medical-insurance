@@ -99,3 +99,8 @@
 .platform-shell-portal .platform-account{color:#fff;text-shadow:0 1px 3px rgba(20,42,70,.2)}
 .platform-shell-portal .platform-account:hover{color:#dceaff}
 .platform-shell-portal .platform-account:focus-visible{outline-color:#fff}
+
+/* Center the application cards together within the portal content area. */
+.portal-page.portal-home{justify-content:center;padding-top:44px;padding-bottom:76px}
+.portal-home > .portal-grid,.portal-home > .portal-management{flex-shrink:0}
+.portal-home > .portal-footer{position:absolute;bottom:24px;left:0;right:0;margin:0;padding:0}

@@ -68,8 +68,8 @@ export const ENUMS = {
   lifecycleStatus: ['试运行中', '已上线', '已禁用'] as const,
   // 运行状态（仅已上线有效，V1.7 §2.2.1 #8：在线/离线/更新/禁用/异常）
   runtimeStatus: ['在线', '离线', '更新', '禁用', '异常'] as const,
-  // ===== V1.5 风险分级（高度关注 / 中度关注 / 一般关注 + 待分级 / 待复核）=====
-  riskLevel: ['高度关注', '中度关注', '一般关注', '待分级', '待复核'] as const,
+  // ===== V1.5 风险分级（高风险 / 中风险 / 低风险 + 待分级 / 待复核）=====
+  riskLevel: ['高风险', '中风险', '低风险', '待分级', '待复核'] as const,
   // ===== 权限治理枚举（V1.5 台账侧已下线；保留为其他模块兼容引用）=====
   businessSystem: ['HIS', 'LIS', 'PACS', 'EMR'] as const,
   // ===== 权限治理枚举（V1.5 台账侧已下线；保留为其他模块兼容引用）=====
@@ -104,9 +104,9 @@ export const STATUS_COLOR = {
   },
   // V1.5 风险分级 Tag 配色
   risk: {
-    高度关注: 'red',
-    中度关注: 'orange',
-    一般关注: 'default',
+    高风险: 'red',
+    中风险: 'orange',
+    低风险: 'default',
     待分级: 'default',
     待复核: 'gold',
   } as const,
@@ -389,24 +389,24 @@ const riskFor = (source: string, type: string): {
 } => {
   // 影像分析、辅助诊断默认高风险
   if (type === '影像分析' || type === '辅助诊断') {
-    return { riskLevel: '高度关注', riskInitial: '高度关注', riskReview: '高度关注' };
+    return { riskLevel: '高风险', riskInitial: '高风险', riskReview: '高风险' };
   }
   // 用药审核默认中度
   if (type === '用药审核') {
     return source === '外采'
-      ? { riskLevel: '高度关注', riskInitial: '中度关注', riskReview: '高度关注' }
-      : { riskLevel: '中度关注', riskInitial: '中度关注' };
+      ? { riskLevel: '高风险', riskInitial: '中风险', riskReview: '高风险' }
+      : { riskLevel: '中风险', riskInitial: '中风险' };
   }
   // 病历生成 / 智能问诊
   if (type === '病历生成' || type === '智能问诊') {
     return source === '自研'
-      ? { riskLevel: '一般关注', riskInitial: '一般关注' }
-      : { riskLevel: '中度关注', riskInitial: '中度关注', riskReview: '中度关注' };
+      ? { riskLevel: '低风险', riskInitial: '低风险' }
+      : { riskLevel: '中风险', riskInitial: '中风险', riskReview: '中风险' };
   }
   // 导诊分诊 / 健康评估
   return source === '外采'
-    ? { riskLevel: '中度关注', riskInitial: '一般关注', riskReview: '中度关注' }
-    : { riskLevel: '一般关注', riskInitial: '一般关注' };
+    ? { riskLevel: '中风险', riskInitial: '低风险', riskReview: '中风险' }
+    : { riskLevel: '低风险', riskInitial: '低风险' };
 };
 
 // 默认运行指标
@@ -594,11 +594,11 @@ const linkedResourcesFor = (raw: RawAgent, idx: number): LinkedResource[] => {
 };
 
 // 风险分级初判依据
-const riskBasisFor = (level: '高度关注' | '中度关注' | '一般关注' | '待分级' | '待复核', type: string): string => {
+const riskBasisFor = (level: '高风险' | '中风险' | '低风险' | '待分级' | '待复核', type: string): string => {
   if (level === '待分级' || level === '待复核') return '';
-  if (level === '高度关注') return `根据风险分级量表判定：${type}类智能体参与诊疗决策或直接影响诊疗路径，依据 V1.5 §2.3 判定规则「Q1-Q7 任一选 C 即为高度关注」，综合判定为「高度关注」。建议在临床应用中加强监督与人工复核。`;
-  if (level === '中度关注') return `根据风险分级量表判定：${type}类智能体提供医疗诊疗过程中的重要参考信息或关键技术支持，依据 V1.5 §2.3 判定规则「任一 B 即为中度关注」，综合判定为「中度关注」。建议定期评估其输出质量。`;
-  return `根据风险分级量表判定：${type}类智能体未直接参与临床诊疗决策，依据 V1.5 §2.3 判定规则「全部 A 即为一般关注」，综合判定为「一般关注」。建议按常规流程管理。`;
+  if (level === '高风险') return `根据风险分级量表判定：${type}类智能体参与诊疗决策或直接影响诊疗路径，依据 V1.5 §2.3 判定规则「Q1-Q7 任一选 C 即为高风险」，综合判定为「高风险」。建议在临床应用中加强监督与人工复核。`;
+  if (level === '中风险') return `根据风险分级量表判定：${type}类智能体提供医疗诊疗过程中的重要参考信息或关键技术支持，依据 V1.5 §2.3 判定规则「任一 B 即为中风险」，综合判定为「中风险」。建议定期评估其输出质量。`;
+  return `根据风险分级量表判定：${type}类智能体未直接参与临床诊疗决策，依据 V1.5 §2.3 判定规则「全部 A 即为低风险」，综合判定为「低风险」。建议按常规流程管理。`;
 };
 
 // 评测结果（V1.5 §2.2.5）
@@ -1904,7 +1904,7 @@ export const ledgerAgents: LedgerAgent[] = ledgerAgentsRaw.map((a, idx) => {
   const finalRiskLevel = pendingIdx.has(idx)
     ? ('待分级' as const)
     : reviewOverriddenIdx.has(idx)
-    ? (risk.riskInitial ?? '一般关注')
+    ? (risk.riskInitial ?? '低风险')
     : risk.riskLevel;
 
   return {
@@ -2145,7 +2145,7 @@ export const getSourceDistribution = (list: LedgerAgent[] = getVisibleAgents()) 
 
 // 风险分级嵌套环图数据（外环=复核，内环=初判）
 export const getRiskDistribution = (list: LedgerAgent[] = getVisibleAgents()) => {
-  const order = ['高度关注', '中度关注', '一般关注'];
+  const order = ['高风险', '中风险', '低风险'];
   const initial = order.map((lvl) => ({
     name: lvl,
     value: list.filter((a) => a.riskInitial === lvl).length,
@@ -2320,7 +2320,7 @@ export const getSubscriptionHistoryReports = (): SubscriptionReportRecord[] => {
       highlights: [
         '本日新增 2 例告警（影像科 PACS 链路抖动 ×1、内分泌科 LLM 调用超时 ×1）',
         '智能体总调用量 238.63 万,环比前日 +3.2%',
-        '覆盖 11/11 科室,中度关注智能体 4 个,本周新增 1 个',
+        '覆盖 11/11 科室,中风险智能体 4 个,本周新增 1 个',
       ],
       status: 'delivered',
     },
@@ -2335,7 +2335,7 @@ export const getSubscriptionHistoryReports = (): SubscriptionReportRecord[] => {
       highlights: [
         '本日新增 1 例故障（心内科 GPU 节点内存告警）,已自动重启',
         '调用量较前日 -1.4%,处于正常波动区间',
-        '风险分级未变化,无新增高度关注智能体',
+        '风险分级未变化,无新增高风险智能体',
       ],
       status: 'viewed',
     },

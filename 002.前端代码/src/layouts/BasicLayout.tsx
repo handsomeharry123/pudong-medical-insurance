@@ -39,10 +39,8 @@ export default function BasicLayout() {
 
         <Dropdown open={switcherOpen} onOpenChange={setSwitcherOpen} trigger={['click']} dropdownRender={() => <div className="platform-app-switcher" role="navigation" aria-label="系统切换">
           {[
-            { name: '平台首页', description: '统一应用入口', icon: <PortalIcon kind="home" />, path: '/portal', tone: 'blue' },
+            { name: '应用门户', description: '统一应用入口', icon: <PortalIcon kind="home" />, path: '/portal', tone: 'blue' },
             { name: '医保智慧服务平台', description: '业务办理 · 医疗监管', icon: <PortalIcon kind="hospital" />, path: '/portal?system=service', tone: 'hospital' },
-            { name: '医保综合智能体平台', description: '智能分析 · 辅助审核', icon: <PortalIcon kind="robot" />, path: '/app/home/overview', tone: 'robot' },
-            { name: '用户管理平台', description: '用户组织 · 权限管理', icon: <PortalIcon kind="users" />, path: '/app/modules/users', tone: 'users' },
           ].map(app => <NavLink key={app.path} to={app.path} className="platform-app-entry" onClick={() => setSwitcherOpen(false)}>
             <span className={`platform-app-icon ${app.tone}`}>{app.icon}</span><span className="platform-app-copy"><strong>{app.name}</strong><small>{app.description}</small></span>
           </NavLink>)}
