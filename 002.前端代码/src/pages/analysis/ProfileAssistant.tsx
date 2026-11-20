@@ -12,6 +12,11 @@ import {useAssistantFloat} from './useAssistantFloat';
 import {capabilityActions,emptyProfileFilters,filterSummary,matchingInstitutions,profileGuide,respondProfileGuide,type ProfileListFilters} from './profileAssistantGuide';
 import './profileAssistant.css';
 
+const displayModeKey='yixiaobao-display-mode';
+const dockPositionKey='yixiaobao-dock-top';
+function readPreference(key:string){try{return localStorage.getItem(key);}catch{return null;}}
+function savePreference(key:string,value:string){try{localStorage.setItem(key,value);}catch{/* Storage may be unavailable; retain the current page state. */}}
+
 type ChatMessage={id:number;role:'user'|'assistant';content:string;result?:Result;image?:string;progress?:number;retryFile?:File};
 export default function ProfileAssistant({pathname}:{pathname:string}){
  return <ProfileAssistantSession key={pathname} pathname={pathname}/>;
@@ -19,8 +24,10 @@ export default function ProfileAssistant({pathname}:{pathname:string}){
 function ProfileAssistantSession({pathname}:{pathname:string}){
  const navigate=useNavigate(),parts=pathname.split('/'),code=parts[5],batch=parts[7],org=institutions.find(i=>i.code===code);
  const [open,setOpen]=useState(false),[hint,setHint]=useState(true),[draft,setDraft]=useState(''),[messages,setMessages]=useState<ChatMessage[]>([]),[unread,setUnread]=useState(0),[hover,setHover]=useState(false),[pulse,setPulse]=useState(false),[sitting,setSitting]=useState(false),[busy,setBusy]=useState(false),[drop,setDrop]=useState(false),[recording,setRecording]=useState(false),[linkOpen,setLinkOpen]=useState(false),[link,setLink]=useState(''),[expanded,setExpanded]=useState<Result|null>(null),[hintHeight,setHintHeight]=useState(180);
- const [docked,setDocked]=useState(false);
- const [dockTop,setDockTop]=useState(()=>Math.max(8,window.innerHeight-75));
+ const [docked,setDockedState]=useState(()=>readPreference(displayModeKey)==='collapsed');
+ const setDocked=(value:boolean)=>{savePreference(displayModeKey,value?'collapsed':'expanded');setDockedState(value);};
+ const [dockTop,setDockTop]=useState(()=>{const saved=readPreference(dockPositionKey),top=saved===null?NaN:Number(saved);return Math.max(8,Math.min(Number.isFinite(top)?top:window.innerHeight-75,Math.max(8,window.innerHeight-65)));});
+ useEffect(()=>{savePreference(dockPositionKey,String(dockTop));},[dockTop]);
  const dockDrag=useRef<{y:number;top:number;moved:boolean}|null>(null),dockMoved=useRef(false);
  const clampDock=(top:number)=>Math.max(8,Math.min(top,Math.max(8,window.innerHeight-65)));
  useEffect(()=>{const resize=()=>setDockTop(v=>clampDock(v));window.addEventListener('resize',resize);return()=>window.removeEventListener('resize',resize);},[]);
