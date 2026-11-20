@@ -120,3 +120,29 @@ body[data-app-theme='tech'] .platform-navigation{background:#0f1830;border-color
 
 .platform-app-switcher .platform-app-icon{border-radius:50%;flex-shrink:0}
 .platform-app-switcher .platform-app-icon.blue{background:#2469e8;color:#fff}
+
+.platform-app-entry.platform-app-entry-disabled{opacity:.45;cursor:not-allowed;background:#f5f6f8;color:#8c8c8c;box-shadow:none}
+.platform-app-entry.platform-app-entry-disabled:hover{background:#f5f6f8;transform:none;box-shadow:none}
+
+/* 智能体入口身份标签，与业务模块保持同一导航层级。 */
+.platform-ai-badge{display:inline-flex;align-items:center;justify-content:center;gap:3px;flex-shrink:0;margin-left:0;padding:2px 7px;border:1px solid transparent;border-radius:999px;background:linear-gradient(110deg,#edf5ff 0%,#e8f7ff 65%,#e6faff 100%);color:#2469bd;font-size:11px;font-weight:600;line-height:18px;white-space:nowrap}
+.platform-ai-badge svg{width:13px;height:13px;color:#2196d2;flex-shrink:0}
+body[data-app-theme='tech'] .platform-ai-badge{background:linear-gradient(110deg,#20375a,#183e50);border-color:transparent;color:#b9e5ff}
+@media(max-width:760px){.platform-ai-badge{display:none}}
+
+.platform-navigation nav a>.platform-assistant-icon{width:17px;height:20px;display:inline-flex;align-items:center;justify-content:center;overflow:visible}
+.platform-assistant-icon svg{flex-shrink:0;display:block}
+
+/* 医小保常驻智能体身份：蓝色主题搭配青色细节，保持轻量身份识别。 */
+.platform-navigation nav a.platform-agent-entry{background:linear-gradient(90deg,#f0f7ff 0%,#f8fcff 55%,#ffffff00 100%);border:1px solid transparent;color:#2764ac;font-weight:600;box-shadow:none;margin-bottom:8px;transition:background .18s,border-color .18s,box-shadow .18s}
+.platform-navigation nav a.platform-agent-entry>.anticon{color:#3088cf}
+.platform-navigation nav a.platform-agent-entry:hover{background:linear-gradient(110deg,#e6efff,#edf8ff 70%,#f5fcff);border-color:transparent;color:#1c5ca5;box-shadow:none}
+.platform-navigation nav a.platform-agent-entry.active{background:linear-gradient(110deg,#e1ebff,#e3f3ff 70%,#eafaff);border-color:transparent;color:#185ba5;box-shadow:none}
+.platform-navigation nav a.platform-agent-entry.active>.anticon{color:#2178c4}
+.platform-navigation nav a.platform-agent-entry.active:before{background:#2879d4;top:11px;bottom:11px;border-radius:0 3px 3px 0}
+.platform-navigation nav a.platform-agent-entry:focus-visible{outline:2px solid #2879d4;outline-offset:2px}
+.platform-agent-entry .platform-ai-badge{background:linear-gradient(110deg,#e6f0ff,#e1f7fc);border-color:transparent;color:#216ab1}
+body[data-app-theme='tech'] .platform-navigation nav a.platform-agent-entry{background:linear-gradient(90deg,#1b304b,#0f183000);border-color:transparent;color:#bbdcff}
+body[data-app-theme='tech'] .platform-navigation nav a.platform-agent-entry>.anticon{color:#7dc5ff}
+body[data-app-theme='tech'] .platform-navigation nav a.platform-agent-entry:hover,body[data-app-theme='tech'] .platform-navigation nav a.platform-agent-entry.active{background:linear-gradient(110deg,#293b5e,#1c4355);border-color:transparent;color:#d5efff}
+body[data-app-theme='tech'] .platform-agent-entry .platform-ai-badge{background:#1e3b50;border-color:transparent;color:#b9e5ff}

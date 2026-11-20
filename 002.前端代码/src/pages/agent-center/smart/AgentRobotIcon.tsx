@@ -97,7 +97,7 @@ const RobotIcon = ({ mood = 'idle', size = 64, badge, badgePulse = false, handWa
         </defs>
 
         {/* 接触阴影 */}
-        <ellipse cx="48" cy="90" rx="21" ry="3.2" fill="#0B3D9A" opacity="0.22" />
+        <ellipse className="agent-robot-ground-shadow" cx="48" cy="90" rx="21" ry="3.2" fill="#0B3D9A" opacity="0.22" />
 
         {/* 顶部卷曲天线，参考图的品牌识别点 */}
         <g

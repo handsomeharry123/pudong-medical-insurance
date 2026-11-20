@@ -40,10 +40,13 @@ export default function BasicLayout() {
         <Dropdown open={switcherOpen} onOpenChange={setSwitcherOpen} trigger={['click']} dropdownRender={() => <div className="platform-app-switcher" role="navigation" aria-label="系统切换">
           {[
             { name: '应用门户', description: '统一应用入口', icon: <PortalIcon kind="home" />, path: '/portal', tone: 'blue' },
-            { name: '医保智慧服务平台', description: '业务办理 · 医疗监管', icon: <PortalIcon kind="hospital" />, path: '/portal?system=service', tone: 'hospital' },
-          ].map(app => <NavLink key={app.path} to={app.path} className="platform-app-entry" onClick={() => setSwitcherOpen(false)}>
-            <span className={`platform-app-icon ${app.tone}`}>{app.icon}</span><span className="platform-app-copy"><strong>{app.name}</strong><small>{app.description}</small></span>
-          </NavLink>)}
+            { name: '医保智慧服务平台', description: '业务办理 · 医疗监管', icon: <PortalIcon kind="hospital" />, path: '/portal?system=service', tone: 'hospital', disabled: true },
+          ].map(app => {
+            const content=<><span className={`platform-app-icon ${app.tone}`}>{app.icon}</span><span className="platform-app-copy"><strong>{app.name}</strong><small>{app.description}</small></span></>;
+            return app.disabled
+              ? <div key={app.path} className="platform-app-entry platform-app-entry-disabled" aria-disabled="true">{content}</div>
+              : <NavLink key={app.path} to={app.path} className="platform-app-entry" onClick={() => setSwitcherOpen(false)}>{content}</NavLink>;
+          })}
         </div>}><button className="platform-account"><AppstoreOutlined /> 应用切换</button></Dropdown>
         <Dropdown trigger={['click']} menu={{ items: [
           { key: '/profile', label: '个人中心', icon: <UserOutlined /> },
