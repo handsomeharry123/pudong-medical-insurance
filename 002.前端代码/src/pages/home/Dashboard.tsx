@@ -36,10 +36,10 @@ function RiskTrend({period}:{period:Period}){
  const series=['高风险','中风险','低风险'] as const;
  return <div className="history-trend-chart" aria-label={`${period}高、中、低风险机构数量趋势，单位家`}>
  <div className="history-trend-legend">{series.map(risk=><span key={risk}><i style={{background:riskColors[risk]}}/>{risk}</span>)}</div>
- <div className="history-trend-plot"><ResponsiveContainer width="100%" height="100%"><LineChart data={rows} margin={{top:12,right:14,bottom:2,left:0}}>
+ <div className="history-trend-plot"><ResponsiveContainer width="100%" height="100%"><LineChart data={rows} margin={{top:16,right:16,bottom:2,left:6}}>
  <CartesianGrid vertical={false} stroke="#4d89a72b"/>
  <XAxis dataKey="period" axisLine={false} tickLine={false} tick={chartTick} minTickGap={8} tickFormatter={value=>period==='月度'?`${value.slice(5)}月`:value.replace('2025 ','25 ').replace('2026 ','26 ')}/>
- <YAxis domain={[0,90]} ticks={[0,30,60,90]} width={30} axisLine={false} tickLine={false} tick={chartTick}/>
+ <YAxis domain={[0,250]} ticks={[0,50,100,150,200,250]} interval={0} width={40} tickMargin={8} axisLine={false} tickLine={false} tick={{...chartTick,fontSize:10}} allowDecimals={false}/>
  <Tooltip content={({active,payload,label})=>{if(!active||!payload?.length)return null;const index=rows.findIndex(row=>row.period===label);return <div style={chartTip} className="history-trend-tooltip"><strong>{label} · 机构数量</strong>{series.map(risk=>{const count=rows[index][risk],previous=index>0?rows[index-1][risk]:null;const change=previous===null?null:previous===0?null:(count-previous)/previous*100;return <div key={risk} style={{color:riskColors[risk]}}>{risk}：{count} 家 · 环比 {change===null?'—':`${change>0?'+':''}${change.toFixed(1)}%`}</div>;})}</div>;}}/>
  {series.map(risk=><Line key={risk} dataKey={risk} stroke={riskColors[risk]} strokeWidth={2.5} type="monotone" isAnimationActive={false} dot={{r:2.5,fill:riskColors[risk],stroke:'#102d46',strokeWidth:1.5}} activeDot={{r:5,fill:riskColors[risk],stroke:'#102d46',strokeWidth:2}}/>)}
  </LineChart></ResponsiveContainer></div>
@@ -72,7 +72,7 @@ export default function Dashboard(){
  return <div className={`history-dashboard ${expanded?'history-expanded':''}`} data-testid="history-dashboard">
  <div className="history-heading"><Button className="history-back" type="text" icon={<ArrowLeftOutlined/>} onClick={()=>navigate(PROFILE_PATH)} data-testid="dashboard-back">返回监管首页</Button><div><div className="history-eyebrow">PUDONG · MEDICAL INSTITUTION SUPERVISION</div><h1>医疗机构监管履历大屏</h1><p>数据覆盖周期：2022-01-01 — {snapshot} <i/> 最新更新：{snapshot} 18:00</p></div><div className="history-heading-actions"><Button icon={expanded?<ShrinkOutlined/>:<ExpandOutlined/>} onClick={()=>{setExpanded(!expanded);pause();}}>{expanded?'退出大屏':'展开大屏'}</Button></div></div>
  <div className="history-kpis">
- <button onClick={()=>{setMode('机构列表');setRiskFilter('');setSelected(null);pause();}} data-testid="kpi-institutions"><span>监管机构</span><strong>{totals.institutions}<em>家</em></strong><p>已评级 {orgs.filter(o=>o.hasScore).length} 家 · 待出分 {orgs.filter(o=>!o.hasScore).length} 家</p></button>
+ <button onClick={()=>{setMode('机构列表');setRiskFilter('');setSelected(null);pause();}} data-testid="kpi-institutions"><span>监管机构</span><strong>{totals.institutions}<em>家</em></strong></button>
  <button className={riskFilter==='高风险'?'selected':''} aria-pressed={riskFilter==='高风险'} onClick={()=>riskFilter==='高风险'?resetCore():filter('高风险')} data-testid="kpi-high"><span>高风险机构</span><strong>{totals.high}<em>家</em></strong><p><b>较上月 +2 家</b></p></button>
  <div><span>风险等级上升</span><strong>{totals.rising}<em>家</em></strong><p>其中升至高风险 <b>{totals.risingHigh} 家</b></p></div>
  <div><span>累计监管检查次数</span><strong>{totals.checks}<em>次</em></strong><p>本月监管检查 {totals.monthly} 次</p></div>

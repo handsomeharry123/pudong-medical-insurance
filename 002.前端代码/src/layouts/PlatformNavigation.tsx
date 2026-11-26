@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Grid, Popover, Tooltip } from 'antd';
-import { AuditOutlined, BarChartOutlined, ScheduleOutlined, SafetyCertificateOutlined, FileSearchOutlined, SettingOutlined, LeftOutlined, RightOutlined, DownOutlined } from '@ant-design/icons';
+import { TeamOutlined, AuditOutlined, BarChartOutlined, ScheduleOutlined, SafetyCertificateOutlined, FileSearchOutlined, SettingOutlined, LeftOutlined, RightOutlined, DownOutlined } from '@ant-design/icons';
 
 export const NavigationContext = createContext({ collapsed: false, toggle: () => {} });
 export const usePlatformNavigation = () => useContext(NavigationContext);
@@ -11,6 +11,7 @@ export const platformModules = [
   { key: 'procurement', title: '集采计划执行进度跟踪', icon: <ScheduleOutlined /> },
   { key: 'care', title: '长护险监管', icon: <SafetyCertificateOutlined /> },
   { key: 'audit', title: '审计中心', icon: <FileSearchOutlined /> },
+  { key: 'users', title: '用户中心', icon: <TeamOutlined /> },
   { key: 'settings', title: '系统配置', icon: <SettingOutlined /> },
 ];
 export default function PlatformNavigation() {

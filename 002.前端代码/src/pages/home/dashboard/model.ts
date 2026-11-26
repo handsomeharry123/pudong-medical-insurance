@@ -15,13 +15,21 @@ export const sortRisk=(a:Org,b:Org)=>risks.indexOf(a.risk)-risks.indexOf(b.risk)
 export const top10=[...orgs].sort(sortRisk).slice(0,10);
 export const riskStructure=risks.map(name=>({name,count:orgs.filter(i=>i.risk===name).length,percent:orgs.filter(i=>i.risk===name).length/orgs.length*100}));
 export const settlement=['1级','2级','3级'].map(name=>{const items=orgs.filter(i=>i.level===name);return {name,total:items.length,...Object.fromEntries(risks.map(r=>[r,items.filter(i=>i.risk===r).length/items.length*100]))};});
-const trendRow=(period:string,high:number,medium:number,low:number)=>({period,高风险:high,中风险:medium,低风险:low});
+// Fixed mock cohort with small deterministic fluctuations and an improving overall mix.
+const currentHigh=riskStructure.find(r=>r.name==='高风险')!.count;
+const currentMedium=riskStructure.find(r=>r.name==='中风险')!.count;
+const trendSeries=(periods:string[],highStep:number,mediumStep:number)=>periods.map((period,index)=>{
+ const remaining=periods.length-1-index;
+ const highOffsets=[0,-3,2,-2,1,0],mediumOffsets=[0,4,-4,3,-1,0];
+ const high=currentHigh+remaining*highStep+(remaining?highOffsets[index]:0);
+ const medium=currentMedium+remaining*mediumStep+(remaining?mediumOffsets[index]:0);
+ return {period,高风险:high,中风险:medium,低风险:institutions.length-high-medium};
+});
 export const trends={
- '月度':[trendRow('2026-06',8,32,84),trendRow('2026-07',9,31,84),trendRow('2026-08',10,30,84),trendRow('2026-09',10,32,82),trendRow('2026-10',10,31,83),trendRow('2026-11',12,28,84)],
- '季度':[trendRow('2025 Q3',9,33,82),trendRow('2025 Q4',10,31,83),trendRow('2026 Q1',10,32,82),trendRow('2026 Q2',8,32,84),trendRow('2026 Q3',10,32,82),trendRow('2026 Q4',12,28,84)],
- '年度':riskTrend.filter(t=>t.year>='2022').map(t=>trendRow(t.year,t.high,t.medium,t.low))
+ '月度':trendSeries(['2026-06','2026-07','2026-08','2026-09','2026-10','2026-11'],2,3),
+ '季度':trendSeries(['2025 Q3','2025 Q4','2026 Q1','2026 Q2','2026 Q3','2026 Q4'],3,4),
+ '年度':trendSeries(riskTrend.filter(t=>t.year>='2022').map(t=>t.year),4,6)
 };
-Object.values(trends).forEach(series=>{const last=series[series.length-1];riskStructure.forEach(r=>{if(r.name in last)last[r.name]=r.count;});});
 export type Period='年度'|'季度'|'月度';
 export function progress(period:Period){const start=period==='年度'?'2026-01-01':period==='季度'?'2026-10-01':'2026-11-01';const rows=checks.filter(c=>c.date>=start&&c.date<=snapshot),done=rows.filter(isClosed).length;return {label:period==='年度'?'2026年度':period==='季度'?'2026年第四季度':'2026年11月',start,total:rows.length,done,pending:rows.length-done,ratio:rows.length?done/rows.length:0};}
 export const stages=stageNames.map(name=>{const rows=checks.filter(c=>c.stage===name);return {name,count:rows.length,status:name==='形成结果'?'已办结':'待办',avg:rows.reduce((s,c)=>s+(isClosed(c)?c.duration||0:c.days),0)/(rows.length||1)};});

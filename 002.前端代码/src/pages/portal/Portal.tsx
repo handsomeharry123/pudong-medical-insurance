@@ -1,7 +1,7 @@
 import PortalIcon from '../../components/PortalIcon';
 import { useState } from 'react';
 import { Button, Card, Descriptions, Tag, Modal, Avatar, Form, Input, message } from 'antd';
-import { ArrowLeftOutlined, EditOutlined, UserOutlined, ApartmentOutlined, MedicineBoxOutlined, RobotOutlined, ArrowRightOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, EditOutlined, UserOutlined, MedicineBoxOutlined, RobotOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import './portal.css';
@@ -9,7 +9,6 @@ import './portal.css';
 const applications = [
   { title: '医保智慧服务平台', icon: <PortalIcon kind="hospital" />, color: '#176587', description: '承载现有医保业务系统的统一访问和业务办理', intro: '日常医保业务办理统一入口', tags: ['业务办理', '医疗监管'], features: ['定点医疗机构康复理疗和中医治疗监管系统', '医疗业务后台管理系统', '公务员医疗补助管理系统', '代配药监管系统', '浦东医保业务管理系统', '就业保障平台子模块'] },
   { title: '医保综合智能体平台', icon: <PortalIcon kind="robot" />, color: '#4266e9', description: '提供医保数据分析、业务辅助审核和智能监管能力', intro: '医小保智能分析监管入口', tags: ['数据分析', '智能审核', '智能监管'], features: ['医保数据分析智能体', '医保经办智能审核智能体', '长护险监管智能体', '集采计划执行进度跟踪智能体'], available: true },
-  { title: '用户管理中心', icon: <ApartmentOutlined />, color: '#448c87', description: '用于管理组织、用户、角色及应用访问权限', intro: '用户、角色、应用及系统配置统一管理入口', tags: ['组织管理', '访问权限'], features: ['用户管理', '角色设置', '权限设置'] },
 ];
 export default function Portal() {
   const { currentUser } = useAuth();
@@ -23,10 +22,6 @@ export default function Portal() {
       <p className="portal-description">{app.intro}</p>
       <Button block size="large" type={app.available?'primary':'default'} disabled={!app.available} onClick={()=>navigate('/app/home/overview')}>进入 <ArrowRightOutlined /></Button>
     </Card>)}</div>
-    {!serviceOnly&&currentUser?.roles.includes('信息科管理员')&&<section className="portal-management">
-      <div className="portal-management-icon"><PortalIcon kind="users" /></div><div className="portal-management-copy"><h2>用户管理中心</h2><p>用户、角色、应用及系统配置统一管理入口</p></div>
-      <Button disabled>进入 <ArrowRightOutlined /></Button>
-    </section>}
     {!serviceOnly&&currentUser?.roles.includes('信息科管理员')&&<section className="portal-management portal-governance">
       <div className="portal-management-icon"><PortalIcon kind="governance" /></div><div className="portal-management-copy"><h2>数据治理中心</h2><p>数据资源全生命周期管理与数据治理统一入口</p></div>
       <Button disabled>进入 <ArrowRightOutlined /></Button>
