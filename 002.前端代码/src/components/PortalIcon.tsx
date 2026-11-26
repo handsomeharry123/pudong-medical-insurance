@@ -1,4 +1,9 @@
-export default function PortalIcon({ kind }: { kind: 'home' | 'hospital' | 'robot' | 'users' }) {
+export default function PortalIcon({ kind }: { kind: 'home' | 'hospital' | 'robot' | 'users' | 'governance' }) {
+  if (kind === 'governance') return <svg viewBox="0 0 48 48" width="32" height="32" fill="currentColor" aria-hidden="true" focusable="false">
+    <ellipse cx="20" cy="10" rx="15" ry="6" />
+    <path d="M5 15c7 5 23 5 30 0v8c-7 5-23 5-30 0zM5 27c5 3 12 4 18 3v11C13 42 5 39 5 35z" />
+    <g transform="translate(34 33)"><path d="m-3-11 6 0 1 4 4-1 3 5-3 3 3 3-3 5-4-1-1 4h-6l-1-4-4 1-3-5 3-3-3-3 3-5 4 1z" stroke="#3177b9" strokeWidth="2"/><circle r="3.5" fill="#3177b9"/></g>
+  </svg>;
   if (kind === 'hospital') return <svg className="portal-hospital-mark" viewBox="0 0 160 160" width="32" height="32" aria-hidden="true" focusable="false">
     <circle cx="80" cy="80" r="80" fill="#1261a0" />
     <path d="M66 46a4 4 0 0 1 4-4h18a4 4 0 0 1 4 4v12h14a4 4 0 0 1 4 4v58h5v5H43v-5h5V62a4 4 0 0 1 4-4h14z" fill="#fff" />

@@ -230,3 +230,13 @@
 
 .institution-metric-help{margin-left:4px;color:#98a6ba;font-size:14px;cursor:help;vertical-align:middle;}
 .institution-metric-help:hover,.institution-metric-help:focus-visible{color:#1677ff;}
+
+/* Keep all five metadata fields visible before allocating space to the cover. */
+@media(min-width:1001px){
+ .institution-profile-detail .institution-business-card .institution-default-cover{height:auto;min-height:0;max-height:200px;flex:1 1 140px}
+ .institution-profile-detail .institution-business-card h2{margin:12px 18px 8px;font-size:16px;line-height:1.5}
+ .institution-profile-detail .institution-business-card dl{display:grid;grid-template-columns:64px minmax(0,1fr);grid-template-rows:repeat(5,auto);gap:10px 12px;flex:1 0 auto;margin:4px 18px 22px;align-items:start;align-content:space-between}
+ .institution-profile-detail .institution-business-card dt,
+ .institution-profile-detail .institution-business-card dt:first-child{margin:0;font-size:12px;line-height:22px}
+ .institution-profile-detail .institution-business-card dd{margin:0;font-size:13px;line-height:22px;min-width:0;overflow-wrap:anywhere}
+}

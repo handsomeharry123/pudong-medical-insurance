@@ -104,3 +104,5 @@
 .portal-page.portal-home{justify-content:center;padding-top:44px;padding-bottom:76px}
 .portal-home > .portal-grid,.portal-home > .portal-management{flex-shrink:0}
 .portal-home > .portal-footer{position:absolute;bottom:24px;left:0;right:0;margin:0;padding:0}
+
+.portal-home .portal-governance .portal-management-icon{background:#3177b9;color:#fff}

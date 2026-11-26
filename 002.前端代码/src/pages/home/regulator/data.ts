@@ -4,18 +4,12 @@ export const PARAM_VERSION = 'PD-RISK-2026-V1';
 export const BEHAVIORS = ['串换药品','不必要医药服务','过度诊疗','超范围支付','重复收费','超量开药','过度检查','分解处方'];
 export const VISITS = ['门诊','住院','大病','急观','家床','内设门急诊','急诊','进销存'];
 export type Institution = { code:string; name:string; level:string; category:string; score:number; risk:string; previous:string; rising:boolean };
-// Fictional Pudong-style institution names for the simulated risk dataset.
-const demoAreas=['陆家嘴','潍坊','洋泾','花木','塘桥','南码头','周家渡','上钢','金杨','沪东','浦兴','东明','三林','北蔡','张江','金桥','高桥','高行','高东','曹路','唐镇','合庆','川沙','祝桥','惠南','宣桥','新场','航头','周浦','康桥','大团'];
-const demoInstitutionNames=demoAreas.flatMap(area=>[
- `上海浦东${area}和康医院`,
- `上海浦东${area}仁泽综合门诊部`,
- `上海浦东${area}康宁中医门诊部`,
- `上海浦东${area}惠民社区卫生服务站`,
-]);
-export const institutions: Institution[] = Array.from({length:124},(_,i)=>{
+// Source: 001.产品文档/2026分组检查统计表.xlsx, B3:E63.
+import registry from './institutionRegistry.json';
+export const institutions: Institution[] = registry.map((entry,i)=>{
   const high=i<12, medium=i>=12&&i<40;
   const level= `${i%3+1}级`;
-  return {code:`PDYB-310115-${String(i===12?1:i<12?i+2:i+2).padStart(3,'0')}`,name:demoInstitutionNames[(i*37+19)%demoInstitutionNames.length], level,category:i===12||i===13?'综合医院':['综合医院','专科医院','社区卫生服务中心'][i%3],score:high?+(65+(11-i)*1.4).toFixed(2):medium?+(58.00-(i-12)*1.1).toFixed(2):+(19-(i-40)*.17).toFixed(2),risk:high?'高风险':medium?'中风险':'低风险',previous:i<2?'中风险':i>=12&&i<15?'低风险':i>=40&&i<44?'中风险':high?'高风险':medium?'中风险':'低风险',rising:i<2||(i>=12&&i<15)};
+  return {code:`PDYB-310115-${String(i===12?1:i<12?i+2:i+2).padStart(3,'0')}`,name:entry.name, level,category:entry.category,score:high?+(65+(11-i)*1.4).toFixed(2):medium?+(58.00-(i-12)*1.1).toFixed(2):+(19-(i-40)*.08).toFixed(2),risk:high?'高风险':medium?'中风险':'低风险',previous:i<2?'中风险':i>=12&&i<15?'低风险':i>=40&&i<44?'中风险':high?'高风险':medium?'中风险':'低风险',rising:i<2||(i>=12&&i<15)};
 });
 export const DEFAULT_INST = institutions[12];
 export type Check = {batch:string;code:string;name:string;type:string;date:string;start:string;end:string;stage:string;entered:string;days:number;limit:number;department:string;fee:number;score:number;priority:string;overdue:boolean;duration?:number};
@@ -46,7 +40,7 @@ export function indicators(c:Check){
   return BEHAVIORS.flatMap((behavior,b)=>VISITS.flatMap((visit,v)=>['本地','异地'].map((region,r)=>({id:`${b}-${v}-${r}`,behavior,visit,region,amount:Math.round(c.fee*feeShares[b]*visitShares[v]*(r?.2:.8)),weight: +(feeShares[b]/16).toFixed(5),source:`${c.batch}/指标-${b+1}${v+1}${r+1}`}))));
 }
 export const behaviorData=(c:Check)=>BEHAVIORS.map((name,i)=>({name,amount:Math.round(c.fee*feeShares[i]),contribution:+(c.score*feeShares[i]).toFixed(2)}));
-export const riskTrend=[{year:'2021',high:4,medium:26,low:78},{year:'2022',high:7,medium:32,low:80},{year:'2023',high:8,medium:34,low:81},{year:'2024',high:9,medium:32,low:82},{year:'2025',high:10,medium:31,low:83},{year:'2026',high:12,medium:28,low:84}];
+export const riskTrend=[{year:'2021',high:4,medium:26,low:78},{year:'2022',high:7,medium:32,low:80},{year:'2023',high:8,medium:34,low:81},{year:'2024',high:9,medium:32,low:82},{year:'2025',high:10,medium:31,low:83},{year:'2026',high:12,medium:28,low:institutions.length-40}];
 export const sources=[{name:'医疗机构档案库',id:'ORG-SNAPSHOT-20261109'},{name:'检查结果库',id:'CHECK-RESULT-20261109'},{name:'风险指标库',id:PARAM_VERSION},{name:'监管流程库',id:'FLOW-SNAPSHOT-20261109'}];
 export const metricData=[
  {title:'高风险机构数',value:institutions.filter(i=>i.risk==='高风险').length,unit:'家',label:'当前',color:'#3979ef',action:'查看高风险机构',definition:'按机构代码去重，取最新有效评级为高风险的机构'},
