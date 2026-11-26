@@ -9,6 +9,7 @@ import './portal.css';
 const applications = [
   { title: '医保智慧服务平台', icon: <PortalIcon kind="hospital" />, color: '#176587', description: '承载现有医保业务系统的统一访问和业务办理', intro: '日常医保业务办理统一入口', tags: ['业务办理', '医疗监管'], features: ['定点医疗机构康复理疗和中医治疗监管系统', '医疗业务后台管理系统', '公务员医疗补助管理系统', '代配药监管系统', '浦东医保业务管理系统', '就业保障平台子模块'] },
   { title: '医保综合智能体平台', icon: <PortalIcon kind="robot" />, color: '#4266e9', description: '提供医保数据分析、业务辅助审核和智能监管能力', intro: '医小保智能分析监管入口', tags: ['数据分析', '智能审核', '智能监管'], features: ['医保数据分析智能体', '医保经办智能审核智能体', '长护险监管智能体', '集采计划执行进度跟踪智能体'], available: true },
+  { title: '数据治理中心', icon: <PortalIcon kind="governance" />, color: '#3177b9', intro: '数据资源全生命周期管理与数据治理统一入口' },
 ];
 export default function Portal() {
   const { currentUser } = useAuth();
@@ -16,16 +17,12 @@ export default function Portal() {
   const serviceOnly = new URLSearchParams(window.location.search).get('system') === 'service';
   return <div className="portal-page portal-home">
     <div className="portal-skyline" aria-hidden="true">{Array.from({length:24},(_,i)=><i key={i} style={{height:`${45+(i*47)%140}px`}} />)}</div>
-    <div className="portal-grid">{applications.slice(0,serviceOnly?1:2).map((app,index)=><Card key={app.title} className="portal-card">
-      <div className="portal-icon" style={{background:index?'#5358d9':'#12649e',color:'#fff'}}>{app.icon}</div>
-      <h2>{index?'医保综合智能体平台':app.title}</h2>
+    <div className="portal-grid">{applications.filter((_, index) => serviceOnly ? index === 0 : index < 2 || currentUser?.roles.includes('信息科管理员')).map((app,index)=><Card key={app.title} className="portal-card">
+      <div className="portal-icon" style={{background:app.color,color:'#fff'}}>{app.icon}</div>
+      <h2>{app.title}</h2>
       <p className="portal-description">{app.intro}</p>
       <Button block size="large" type={app.available?'primary':'default'} disabled={!app.available} onClick={()=>navigate('/app/home/overview')}>进入 <ArrowRightOutlined /></Button>
     </Card>)}</div>
-    {!serviceOnly&&currentUser?.roles.includes('信息科管理员')&&<section className="portal-management portal-governance">
-      <div className="portal-management-icon"><PortalIcon kind="governance" /></div><div className="portal-management-copy"><h2>数据治理中心</h2><p>数据资源全生命周期管理与数据治理统一入口</p></div>
-      <Button disabled>进入 <ArrowRightOutlined /></Button>
-    </section>}
     <footer className="portal-footer">© 浦东新区医保综合应用门户</footer>
   </div>;
 }

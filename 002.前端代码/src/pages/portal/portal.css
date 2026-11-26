@@ -106,3 +106,33 @@
 .portal-home > .portal-footer{position:absolute;bottom:24px;left:0;right:0;margin:0;padding:0}
 
 .portal-home .portal-governance .portal-management-icon{background:#3177b9;color:#fff}
+
+/* Equal application cards with aligned actions. */
+.portal-home > .portal-grid{max-width:1240px;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:stretch}
+.portal-home .portal-card .ant-card-body{min-height:0;padding:32px 24px 28px}
+.portal-home .portal-card h2{font-size:21px;line-height:32px;margin-bottom:12px}
+.portal-home .portal-description{max-width:280px;min-height:48px;line-height:24px;margin-bottom:20px}
+.portal-home .portal-card:nth-child(3) .portal-icon{background:#3177b9!important}
+.portal-home > .portal-grid:has(> :only-child){grid-template-columns:minmax(0,400px);justify-content:center}
+@media(max-width:1000px) and (min-width:701px){
+.portal-home > .portal-grid{gap:16px}
+.portal-home .portal-card .ant-card-body{padding:30px 16px 24px}
+.portal-home .portal-card h2{font-size:18px;line-height:28px;min-height:56px;display:flex;align-items:center;justify-content:center}
+.portal-home .portal-description{font-size:13px;min-height:72px}
+}
+@media(max-width:700px){
+.portal-home > .portal-grid{grid-template-columns:1fr;max-width:440px;gap:20px}
+.portal-home .portal-card .ant-card-body{min-height:0;padding:28px 24px}
+.portal-home .portal-description{min-height:0;margin-bottom:28px}
+.portal-page.portal-home{padding-top:28px;padding-bottom:76px}
+}
+
+/* Raise the desktop entry group while retaining safe space on short screens. */
+@media(min-width:701px) and (min-height:700px){
+  .portal-home > .portal-grid{transform:translateY(-20px)}
+}
+
+/* Keep the action close to its description, with equal two-line text slots. */
+.portal-home .portal-card .ant-btn{margin-top:0}
+.portal-home .portal-icon{margin-bottom:20px}
+@media(max-width:700px){.portal-home .portal-description{margin-bottom:24px}}
